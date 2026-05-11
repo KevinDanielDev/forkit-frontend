@@ -1,0 +1,104 @@
+// Auth feature styles with dark theme
+
+// Import variables from Quasar
+// $dark, $dark-page, $primary, $negative, $positive are defined in quasar.variables.scss
+
+// Auth page container
+.fk-auth-page {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+
+  @media (max-width: 600px) {
+    padding: 1rem;
+  }
+}
+
+// Auth card component
+.fk-auth-card {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 20px 60px rgba($primary, 0.1);
+  }
+}
+
+// Input field styles
+.fk-auth-card__input {
+  :deep(.q-field__native),
+  :deep(.q-field__input) {
+    caret-color: $primary;
+  }
+
+  :deep(.q-field__control input::selection) {
+    background-color: rgba($primary, 0.3);
+  }
+}
+
+// Button styles
+.fk-auth-card__submit {
+  :deep(.q-btn__wrapper) {
+    font-weight: 600;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Select component styling
+:deep(.q-menu) {
+  background-color: $dark;
+
+  .q-item {
+    color: rgba(255, 255, 255, 0.9);
+
+    &.q-item--active {
+      background-color: rgba($primary, 0.2);
+      color: $primary;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+// Typography
+.fk-auth-card__title {
+  background: linear-gradient(135deg, $primary 0%, rgba($primary, 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Animations
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.fk-auth-card {
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .fk-auth-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+
+  .fk-auth-card__title {
+    font-size: 1.5rem;
+  }
+
+  .fk-auth-card__footer {
+    font-size: 0.75rem;
+  }
+}

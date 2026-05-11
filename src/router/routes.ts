@@ -3,7 +3,19 @@ import type { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('pages/IndexPage.vue'),
+    redirect: '/auth/sign-up',
+  },
+  {
+    path: '/auth',
+    redirect: '/auth/sign-up',
+  },
+  {
+    path: '/auth/sign-up',
+    component: () => import('pages/auth-page.vue'),
+  },
+  {
+    path: '/auth/sign-in',
+    component: () => import('pages/auth-page.vue'),
   },
   {
     path: '/:catchAll(.*)*',

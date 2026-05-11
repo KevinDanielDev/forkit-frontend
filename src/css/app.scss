@@ -1,1 +1,24 @@
 // app global css in SCSS form
+
+// Import feature-specific styles
+@import './features/auth';
+
+// Global styles
+body {
+  background-color: $dark-page;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+// Quasar overrides for dark theme
+:deep(.q-field__native),
+:deep(.q-field__input) {
+  color: rgba(255, 255, 255, 0.9);
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+:deep(.q-item__label) {
+  color: rgba(255, 255, 255, 0.9);
+}
