@@ -23,6 +23,40 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+
+  {
+    path: '/dashboard',
+    redirect: { name: 'dashboard' },
+    component: () => import('layouts/dashboard/DashboardLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'dashboard',
+        component: () => import('pages/dashboard/DashboardPage.vue'),
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('pages/dashboard/OrderPage.vue'),
+      },
+      {
+        path: 'clients',
+        name: 'clients',
+        component: () => import('pages/dashboard/ClientPage.vue'),
+      },
+      {
+        path: 'reports',
+        name: 'reports',
+        component: () => import('pages/dashboard/ReportPage.vue'),
+      },
+      {
+        path: 'finances',
+        name: 'finances',
+        component: () => import('pages/dashboard/FinancePage.vue'),
+      },
+    ],
+  },
+
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
