@@ -62,3 +62,32 @@
     background: rgba(255, 255, 255, 0.02);
   }
 }
+
+.fk-section-header {
+  margin-bottom: 5px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--q-primary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.8;
+}
+
+.fk-field {
+  margin-top: 8px;
+  :deep(.q-field__control) {
+    border-radius: 12px;
+    background: rgba(128, 128, 128, 0.05);
+    transition: all 0.3s;
+    &:hover {
+      background: rgba(var(--q-primary), 0.02);
+    }
+  }
+}
+
+.fk-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--q-text-contrast);
+  opacity: 0.9;
+}

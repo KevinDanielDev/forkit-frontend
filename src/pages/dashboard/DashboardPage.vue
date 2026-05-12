@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { useDashboard } from 'src/composables/dashboard/useDashboard';
+import OrderCreateDialog from 'src/components/dashboard/order/OrderCreateDialog.vue';
 
 const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
+
+const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(null);
 </script>
 
 <template>
@@ -34,6 +39,7 @@ const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
           icon="add"
           color="primary"
           unelevated
+          @click="orderCreateDialogRef?.openDialog()"
           class="fk-btn-new text-capitalize q-px-md"
         />
       </q-card-section>
@@ -52,6 +58,12 @@ const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
           no-results-label="No se encontraron resultados"
           class="fk-recent-orders-table"
         >
+          <template v-slot:body-cell-id="props">
+            <q-td :props="props" class="fk-text-weight-bold fk-text-contrast">
+              {{ props.row.id }}
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-client="props">
             <q-td :props="props" class="fk-text-weight-bold fk-text-contrast">
               {{ props.row.client }}
@@ -103,10 +115,13 @@ const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
         </q-table>
       </q-card-section>
     </q-card>
+
+    <OrderCreateDialog ref="orderCreateDialogRef" />
   </q-page>
 </template>
 
 <style lang="scss">
+/* Mantienes tus estilos SCSS actuales igual */
 .fk-recent-orders-table {
   border: none;
   thead tr th {
