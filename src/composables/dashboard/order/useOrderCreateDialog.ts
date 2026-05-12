@@ -80,26 +80,21 @@ export function useOrderCreateDialog() {
   }
 
   async function nextStep() {
-    if (step.value === 1) {
-      const isValid = await clientStepRef.value?.validateForm();
-      if (!clientStepRef.value || !isValid) return;
-      step.value++;
-      return;
-    }
+    const stepRefs = {
+      1: clientStepRef,
+      2: projectStepRef,
+      3: financeStepRef,
+    };
 
-    if (step.value === 2) {
-      const isValid = await projectStepRef.value?.validateForm();
-      if (!projectStepRef.value || !isValid) return;
-      step.value++;
-      return;
-    }
+    const currentRef = stepRefs[step.value as keyof typeof stepRefs];
 
-    if (step.value === 3) {
-      const isValid = await financeStepRef.value?.validateForm();
-      if (!financeStepRef.value || !isValid) return;
-      step.value++;
-      return;
-    }
+    if (!currentRef?.value) return;
+
+    const isValid = await currentRef.value.validateForm();
+
+    if (!isValid) return;
+
+    step.value++;
   }
 
   function backStep() {

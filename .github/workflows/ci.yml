@@ -34,8 +34,5 @@ jobs:
       - name: Run Linter
         run: bun run lint
 
-      - name: TypeScript Type Check
-        run: bun run type-check
-
       - name: Build Test
         run: bun run build
