@@ -12,6 +12,7 @@ export function useDashboard() {
   ];
 
   const columns: QTableColumn[] = [
+    { name: 'id', label: '#', field: 'id', align: 'left' },
     { name: 'client', label: 'Cliente', field: 'client', align: 'left', sortable: true },
     { name: 'job', label: 'Trabajo', field: 'job', align: 'left' },
     { name: 'total', label: 'Total', field: 'total', align: 'right', sortable: true },
@@ -23,6 +24,7 @@ export function useDashboard() {
 
   const rows = ref([
     {
+      id: 1,
       client: 'María García',
       job: 'Diseño de Logo',
       total: 1500,
@@ -31,6 +33,7 @@ export function useDashboard() {
       status: 'En Progreso',
     },
     {
+      id: 2,
       client: 'Carlos Rodríguez',
       job: 'Sitio Web',
       total: 5000,
@@ -39,6 +42,7 @@ export function useDashboard() {
       status: 'En Progreso',
     },
     {
+      id: 3,
       client: 'Ana Martínez',
       job: 'Fotografía de Producto',
       total: 800,
@@ -47,6 +51,7 @@ export function useDashboard() {
       status: 'Completado',
     },
     {
+      id: 4,
       client: 'Luis Fernández',
       job: 'Video Promocional',
       total: 3500,
@@ -55,6 +60,7 @@ export function useDashboard() {
       status: 'Pendiente',
     },
     {
+      id: 5,
       client: 'Sofía Mendoza',
       job: 'Branding Completo',
       total: 4000,
