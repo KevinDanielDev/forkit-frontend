@@ -18,6 +18,8 @@
   "dependencies": {
     "@lucide/vue": "^1.14.0",
     "@quasar/extras": "^1.16.4",
+    "@tanstack/vue-query": "^5.100.10",
+    "@tanstack/vue-query-devtools": "^6.1.29",
     "axios": "^1.2.1",
     "parse": "^8.6.0",
     "pinia": "^3.0.1",
