@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
+import isAuthGuard from './authGuard';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,6 +29,7 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     redirect: { name: 'dashboard' },
     component: () => import('layouts/dashboard/DashboardLayout.vue'),
+    beforeEnter: isAuthGuard,
     children: [
       {
         path: '',

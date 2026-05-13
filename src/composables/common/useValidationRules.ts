@@ -41,7 +41,7 @@ export function useValidationRules() {
 
   const requiredPhone = [required('El teléfono es requerido'), phone()];
 
-  const passwordRules = [
+  const requiredPassword = [
     required('La contraseña es requerida'),
     minLength(8, 'Mínimo 8 caracteres'),
     (val: string) => /[A-Z]/.test(val) || 'Debe contener al menos una mayúscula',
@@ -60,6 +60,6 @@ export function useValidationRules() {
     // Common Rules
     requiredEmail,
     requiredPhone,
-    passwordRules,
+    requiredPassword,
   };
 }

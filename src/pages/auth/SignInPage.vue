@@ -1,11 +1,39 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-
+import { useRouter } from 'vue-router';
 import { Vue3Lottie } from 'vue3-lottie';
 
-import animationData from 'src/animations/auth/auth.json';
+import { useQuasar } from 'quasar';
 
-const test = ref<string>('');
+import { useAuth } from 'src/composables/auth/useAuth';
+
+import animationData from 'src/animations/auth/auth.json';
+import { useNotify } from 'src/composables/common/useNotify';
+import { useValidationRules } from 'src/composables/common/useValidationRules';
+
+// Composables
+const $q = useQuasar();
+const $router = useRouter();
+const { signIn } = useAuth();
+const { notifyError, notifySuccess } = useNotify();
+const { ...rules } = useValidationRules();
+
+// Refs
+const email = ref<string>('');
+const password = ref<string>('');
+const isPasswordVisible = ref<boolean>(false);
+
+// Methods
+function handleSignIn() {
+  signIn(email.value, password.value)
+    .then(() => {
+      notifySuccess('Éxito', 'Sesión iniciada exitosamente');
+      void $router.replace({ name: 'dashboard' });
+    })
+    .catch((error) => {
+      notifyError('Error', error.message);
+    });
+}
 </script>
 
 <template>
@@ -27,17 +55,18 @@ const test = ref<string>('');
         />
       </div>
 
-      <q-form class="q-gutter-md">
+      <q-form @submit.prevent="handleSignIn()" class="q-gutter-md">
         <div>
           <label>Correo Electrónico</label>
           <q-input
             class="q-mt-sm"
-            v-model="test"
+            v-model="email"
             type="email"
             placeholder="jhon.doe@gmail.com"
             dense
             outlined
             lazy-rules
+            :rules="rules.requiredEmail"
           >
             <template #prepend>
               <q-icon name="email" />
@@ -49,18 +78,25 @@ const test = ref<string>('');
           <label>Contraseña</label>
           <q-input
             class="q-mt-sm"
-            v-model="test"
-            type="password"
+            v-model="password"
+            :type="isPasswordVisible ? 'text' : 'password'"
             placeholder="●●●●●●●●"
             dense
             outlined
             lazy-rules
+            :rules="rules.requiredPassword"
           >
             <template #prepend>
               <q-icon name="lock" />
             </template>
             <template #append>
-              <q-btn dense flat round icon="visibility" />
+              <q-btn
+                dense
+                flat
+                round
+                :icon="isPasswordVisible ? 'visibility_off' : 'visibility'"
+                @click="isPasswordVisible = !isPasswordVisible"
+              />
             </template>
           </q-input>
         </div>

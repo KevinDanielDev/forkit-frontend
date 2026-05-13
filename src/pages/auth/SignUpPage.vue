@@ -1,7 +1,44 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const test = ref<string>('');
+import { useQuasar } from 'quasar';
+
+import { useAuth } from 'src/composables/auth/useAuth';
+import { useNotify } from 'src/composables/common/useNotify';
+
+import type { ISignUp } from 'src/models/interfaces/auth/sign-up.interface';
+import { useValidationRules } from 'src/composables/common/useValidationRules';
+
+// Composables
+const $q = useQuasar();
+const $router = useRouter();
+const { signUp } = useAuth();
+const { notifyError, notifySuccess } = useNotify();
+const { ...rules } = useValidationRules();
+
+// Refs
+const userData = ref<ISignUp>({
+  name: '',
+  lastName: '',
+  email: '',
+  countryCode: '',
+  phone: '',
+  password: '',
+});
+const isPasswordVisible = ref<boolean>(false);
+
+// Methods
+function handleSignUp() {
+  signUp(userData.value)
+    .then(() => {
+      notifySuccess('Éxito', 'Usuario registrado exitosamente');
+      void $router.replace({ name: 'dashboard' });
+    })
+    .catch((error) => {
+      notifyError('Error', error.message);
+    });
+}
 </script>
 
 <template>
@@ -14,17 +51,35 @@ const test = ref<string>('');
 
   <q-card flat bordered class="q-mt-md full-width fk-auth-card">
     <q-card-section :class="$q.screen.lt.sm ? 'q-pa-md' : 'q-pa-xl'">
-      <q-form class="q-gutter-y-md">
+      <q-form @submit.prevent="handleSignUp()" class="q-gutter-y-md">
         <div class="row q-col-gutter-md">
           <div class="col-12 col-sm-6">
             <label class="text-weight-medium">Nombres</label>
-            <q-input class="q-mt-xs" v-model="test" type="text" placeholder="Jhon" dense outlined>
+            <q-input
+              class="q-mt-xs"
+              v-model="userData.name"
+              type="text"
+              placeholder="Jhon"
+              dense
+              outlined
+              lazy-rules
+              :rules="[rules.required()]"
+            >
               <template #prepend><q-icon name="person" /></template>
             </q-input>
           </div>
           <div class="col-12 col-sm-6">
             <label class="text-weight-medium">Apellidos</label>
-            <q-input class="q-mt-xs" v-model="test" type="text" placeholder="Doe" dense outlined>
+            <q-input
+              class="q-mt-xs"
+              v-model="userData.lastName"
+              type="text"
+              placeholder="Doe"
+              dense
+              outlined
+              lazy-rules
+              :rules="[rules.required()]"
+            >
               <template #prepend><q-icon name="person" /></template>
             </q-input>
           </div>
@@ -34,11 +89,13 @@ const test = ref<string>('');
           <label class="text-weight-medium">Correo Electrónico</label>
           <q-input
             class="q-mt-xs"
-            v-model="test"
+            v-model="userData.email"
             type="email"
             placeholder="jhon.doe@gmail.com"
             dense
             outlined
+            lazy-rules
+            :rules="rules.requiredEmail"
           >
             <template #prepend><q-icon name="email" /></template>
           </q-input>
@@ -47,17 +104,28 @@ const test = ref<string>('');
         <div class="row q-col-gutter-md q-mt-xs">
           <div class="col-4 col-sm-3">
             <label class="text-weight-medium">Código</label>
-            <q-input class="q-mt-xs" v-model="test" type="text" placeholder="+57" dense outlined />
+            <q-input
+              class="q-mt-xs"
+              v-model="userData.countryCode"
+              type="text"
+              placeholder="+57"
+              dense
+              outlined
+              lazy-rules
+              :rules="[rules.required()]"
+            />
           </div>
           <div class="col-8 col-sm-9">
             <label class="text-weight-medium">Teléfono</label>
             <q-input
               class="q-mt-xs"
-              v-model="test"
+              v-model="userData.phone"
               type="tel"
               placeholder="300 123 4567"
               dense
               outlined
+              lazy-rules
+              :rules="rules.requiredPhone"
             >
               <template #prepend><q-icon name="phone" /></template>
             </q-input>
@@ -68,15 +136,23 @@ const test = ref<string>('');
           <label class="text-weight-medium">Contraseña</label>
           <q-input
             class="q-mt-xs"
-            v-model="test"
-            type="password"
+            v-model="userData.password"
+            :type="isPasswordVisible ? 'text' : 'password'"
             placeholder="●●●●●●●●"
             dense
             outlined
+            lazy-rules
+            :rules="rules.requiredPassword"
           >
             <template #prepend><q-icon name="lock" /></template>
             <template #append>
-              <q-btn dense flat round icon="visibility" />
+              <q-btn
+                dense
+                flat
+                round
+                :icon="isPasswordVisible ? 'visibility' : 'visibility_off'"
+                @click="isPasswordVisible = !isPasswordVisible"
+              />
             </template>
           </q-input>
         </div>

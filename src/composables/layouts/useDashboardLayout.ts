@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useThemeStore } from 'src/stores/theme-store';
+import type { IMenuGroup } from 'src/models/interfaces/layout/options-drawer.interface';
 
 export function useDashboardLayout() {
   const $q = useQuasar();
@@ -19,7 +20,7 @@ export function useDashboardLayout() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
   };
 
-  const menuGroups = [
+  const menuGroups: IMenuGroup[] = [
     {
       title: 'Inicio',
       items: [{ icon: 'dashboard', label: 'Dashboard', route: '/dashboard' }],
@@ -40,7 +41,7 @@ export function useDashboardLayout() {
     },
     {
       title: 'Otros',
-      items: [{ icon: 'logout', label: 'Cerrar Sesión', route: '/' }],
+      items: [{ icon: 'logout', label: 'Cerrar Sesión', route: '/', action: 'logout' }],
     },
   ];
 
