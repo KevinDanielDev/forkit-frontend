@@ -1,1 +1,93 @@
 // app global css in SCSS form
+.fk-auth-card {
+  border-radius: 24px;
+  max-width: 550px;
+}
+
+.fk-container {
+  border-radius: 20px;
+  background: var(--q-bg-color);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &--hover:hover {
+    transform: translateY(-5px);
+    border-color: var(--q-primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.fk-icon-box-base {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0.12;
+  }
+}
+
+.fk-text-weight-bold {
+  font-weight: 800 !important;
+  letter-spacing: -0.5px;
+}
+
+.body--light {
+  .fk-content-bg {
+    background: #f8f9fa;
+  }
+  .fk-text-contrast {
+    color: #1a1a1a;
+  }
+}
+
+.body--dark {
+  .fk-content-bg {
+    background: #0c0e10;
+  }
+  .fk-text-contrast {
+    color: #ffffff;
+  }
+
+  .fk-container {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+.fk-section-header {
+  margin-bottom: 5px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--q-primary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.8;
+}
+
+.fk-field {
+  margin-top: 8px;
+  :deep(.q-field__control) {
+    border-radius: 12px;
+    background: rgba(128, 128, 128, 0.05);
+    transition: all 0.3s;
+    &:hover {
+      background: rgba(var(--q-primary), 0.02);
+    }
+  }
+}
+
+.fk-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--q-text-contrast);
+  opacity: 0.9;
+}
