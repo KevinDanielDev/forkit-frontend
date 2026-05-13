@@ -1,6 +1,29 @@
 import { ref } from 'vue';
 import type { QTableColumn } from 'quasar';
 
+/**
+ * Composable for managing dashboard data and display configuration.
+ * 
+ * Provides dashboard statistics cards, table columns, mock order data, and formatting utilities.
+ * Used to maintain mock data for development purposes with support for order status tracking,
+ * financial information, and client details.
+ * 
+ * @returns {Object} Dashboard data and utilities
+ * @returns {Array<Object>} .cards - Array of statistic cards with icon, value, label, and color
+ * @returns {Array<QTableColumn>} .columns - Quasar table column definitions for orders
+ * @returns {Ref<Array>} .rows - Reactive array of mock order data
+ * @returns {Function} .formatMoney - Utility function to format numbers as currency strings
+ * @returns {Object} .statusMap - Map of order statuses to color and background styling
+ * 
+ * @example
+ * const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
+ * 
+ * // Format currency
+ * const formatted = formatMoney(1500); // Returns: "$1,500.00"
+ * 
+ * // Access status colors
+ * const statusStyle = statusMap['En Progreso']; // Returns: { color: 'primary', bg: '...' }
+ */
 export function useDashboard() {
   const cards = [
     { icon: 'receipt', value: '5', label: 'Total Órdenes', color: 'primary' },

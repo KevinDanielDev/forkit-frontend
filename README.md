@@ -241,6 +241,42 @@ All must pass without errors.
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes in each version.
 
+## 🔍 Recent Commits
+
+Latest commits from the main development branch:
+
+| Commit    | Message                                                       | Date       |
+| --------- | ------------------------------------------------------------- | ---------- |
+| `44d48bc` | Integrate Vue Query for reactive authentication state         | 2026-05-13 |
+| `e0b4eea` | Installation and configuration of Vue Query + DevTools        | 2026-05-13 |
+| `4548dd7` | feat: 🎸 Implement authentication system with Parse SDK       | 2026-05-13 |
+| `48dfa91` | feat: 🎸 Connection to parse-server via boot initialization   | 2026-05-12 |
+| `b01f2f1` | feat: 🎸 Setup project guidelines and documentation           | 2026-05-12 |
+| `3b20665` | Implement responsive multi-step create order dialog           | 2026-05-12 |
+| `427f35e` | feat: 🎸 Implement a professional control panel design        | 2026-05-11 |
+| `c1e4694` | feat: 🎸 Implementation of auth system visual design          | 2026-05-10 |
+| `0bda958` | feat: Implement sign-up authentication system with validation | 2026-05-10 |
+
+For a complete commit history, visit the [commits page](https://github.com/KevinDanielDev/forkit-frontend/commits/develop).
+
+## 📚 Documentation
+
+### JSDoc Coverage
+
+The project includes comprehensive JSDoc documentation for improved developer experience:
+
+- **Services** (`src/infrastructure/parse/`) — Complete documentation with parameter descriptions and return types
+- **Composables** (`src/composables/`) — Documented composable functions with usage examples
+- **Interfaces** (`src/models/interfaces/`) — Detailed interface definitions with property descriptions
+- **Type definitions** — TypeScript ensures type safety across the codebase
+
+### Code Organization
+
+- **Services** — Parse SDK integration and authentication logic
+- **Composables** — Vue 3 composition functions for component reusability
+- **Interfaces** — Centralized type definitions for data models
+- **Stores** — Pinia store definitions for state management
+
 ## ❓ Questions / Support
 
 - 📮 GitHub Issues: [Open an issue](https://github.com/KevinDanielDev/forkit-frontend/issues)
