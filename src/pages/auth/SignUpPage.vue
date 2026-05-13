@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-import { useQuasar } from 'quasar';
-
 import { useAuth } from 'src/composables/auth/useAuth';
-import { useNotify } from 'src/composables/common/useNotify';
 
 import type { ISignUp } from 'src/models/interfaces/auth/sign-up.interface';
 import { useValidationRules } from 'src/composables/common/useValidationRules';
 
 // Composables
-const $q = useQuasar();
-const $router = useRouter();
-const { signUp } = useAuth();
-const { notifyError, notifySuccess } = useNotify();
+const { signUpMutation } = useAuth();
+const { isPending } = signUpMutation;
 const { ...rules } = useValidationRules();
 
 // Refs
@@ -30,14 +23,7 @@ const isPasswordVisible = ref<boolean>(false);
 
 // Methods
 function handleSignUp() {
-  signUp(userData.value)
-    .then(() => {
-      notifySuccess('Éxito', 'Usuario registrado exitosamente');
-      void $router.replace({ name: 'dashboard' });
-    })
-    .catch((error) => {
-      notifyError('Error', error.message);
-    });
+  signUpMutation.mutate(userData.value);
 }
 </script>
 
@@ -165,6 +151,8 @@ function handleSignUp() {
           rounded
           label="Crear cuenta"
           type="submit"
+          :loading="isPending"
+          :disable="isPending"
         />
       </q-form>
     </q-card-section>

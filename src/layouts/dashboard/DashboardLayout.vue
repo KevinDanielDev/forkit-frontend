@@ -2,7 +2,7 @@
 import { useDashboardLayout } from 'src/composables/layouts/useDashboardLayout';
 import { useAuth } from 'src/composables/auth/useAuth';
 
-const { logout } = useAuth();
+const { logoutMutation } = useAuth();
 const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboardLayout();
 </script>
 
@@ -45,7 +45,7 @@ const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboa
               v-ripple
               clickable
               :to="item.route"
-              @click="item.action === 'logout' ? logout() : null"
+              @click="item.action === 'logout' ? logoutMutation.mutate() : null"
               exact
               active-class="fk-nav-active"
               class="fk-nav-item q-mb-xs"

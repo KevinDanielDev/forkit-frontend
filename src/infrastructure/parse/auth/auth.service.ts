@@ -1,10 +1,20 @@
 import Parse from 'parse';
 
+import type { IUser } from 'src/models/interfaces/user/user.interface';
 import type { ISignUp } from 'src/models/interfaces/auth/sign-up.interface';
 
 async function signIn(email: string, password: string) {
   try {
-    await Parse.User.logIn(email, password);
+    const parseUser = await Parse.User.logIn(email, password);
+    const userResponse: IUser = {
+      name: parseUser.get('firstName'),
+      lastName: parseUser.get('lastName'),
+      email: parseUser.get('email'),
+      phone: parseUser.get('phone'),
+      countryCode: parseUser.get('countryCode'),
+    };
+
+    return userResponse;
   } catch (error) {
     throw error as Parse.Error;
   }
@@ -39,7 +49,15 @@ async function signUp(user: ISignUp) {
 
     await newUser.save();
 
-    return newUser;
+    const userResponse: IUser = {
+      name: newUser.get('firstName'),
+      lastName: newUser.get('lastName'),
+      email: newUser.get('email'),
+      phone: newUser.get('phone'),
+      countryCode: newUser.get('countryCode'),
+    };
+
+    return userResponse;
   } catch (error) {
     throw error as Parse.Error;
   }

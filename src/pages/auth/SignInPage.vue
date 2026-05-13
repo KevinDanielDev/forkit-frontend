@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { Vue3Lottie } from 'vue3-lottie';
-
-import { useQuasar } from 'quasar';
 
 import { useAuth } from 'src/composables/auth/useAuth';
 
 import animationData from 'src/animations/auth/auth.json';
-import { useNotify } from 'src/composables/common/useNotify';
 import { useValidationRules } from 'src/composables/common/useValidationRules';
 
 // Composables
-const $q = useQuasar();
-const $router = useRouter();
-const { signIn } = useAuth();
-const { notifyError, notifySuccess } = useNotify();
+const { signInMutation } = useAuth();
+const { isPending } = signInMutation;
 const { ...rules } = useValidationRules();
 
 // Refs
@@ -25,14 +19,7 @@ const isPasswordVisible = ref<boolean>(false);
 
 // Methods
 function handleSignIn() {
-  signIn(email.value, password.value)
-    .then(() => {
-      notifySuccess('Éxito', 'Sesión iniciada exitosamente');
-      void $router.replace({ name: 'dashboard' });
-    })
-    .catch((error) => {
-      notifyError('Error', error.message);
-    });
+  signInMutation.mutate({ email: email.value, password: password.value });
 }
 </script>
 
@@ -116,7 +103,13 @@ function handleSignIn() {
             rounded
             label="Iniciar Sesión"
             type="submit"
-          />
+            :disable="isPending"
+            :loading="isPending"
+          >
+            <template #loading>
+              <q-spinner-tail color="white" />
+            </template>
+          </q-btn>
         </div>
       </q-form>
     </q-card-section>
