@@ -5,6 +5,10 @@ import { useQuasar } from 'quasar';
 import type { ClientStep, FinanceStep, ProjectStep } from 'src/components/dashboard/order/steps';
 
 import type { IClientData, IFinanceData, IProjectData } from 'src/models/interfaces/order';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import { useNotify } from 'src/composables/common/useNotify';
+import { createOrder } from 'src/infrastructure/parse/order/order.service';
+import type { IOrder } from 'src/models/interfaces/order/order.interface';
 
 // Refs Global
 const step = ref<number>(1);
@@ -34,11 +38,11 @@ const totalSteps = 3;
 
 /**
  * Composable for managing the multi-step order creation dialog state and navigation.
- * 
+ *
  * Handles a 3-step order creation process (Client → Project → Finance) with form validation,
  * data persistence across steps, and mobile-responsive UI. Manages dialog state, step navigation,
  * data clearing, and progress tracking.
- * 
+ *
  * @returns {Object} Dialog state, refs, computed properties, and methods
  * @returns {Ref<number>} .step - Current step number (1-3)
  * @returns {Ref<boolean>} .isDialogOpen - Dialog visibility state
@@ -56,24 +60,26 @@ const totalSteps = 3;
  * @returns {Function} .closeDialog - Close dialog and reset state
  * @returns {Function} .nextStep - Validate current step and advance to next
  * @returns {Function} .backStep - Go to previous step or close dialog if on step 1
- * 
+ *
  * @example
  * const {
  *   step, isDialogOpen, clientData, projectData, financeData,
  *   openDialog, closeDialog, nextStep, backStep
  * } = useOrderCreateDialog();
- * 
+ *
  * // Open dialog
  * openDialog();
- * 
+ *
  * // Progress to next step (with validation)
  * await nextStep();
- * 
+ *
  * // Go back
  * backStep();
  */
 export function useOrderCreateDialog() {
   const $q = useQuasar();
+  const queryClient = useQueryClient();
+  const { notifyError, notifySuccess } = useNotify();
 
   // Refs
   const isDialogOpen = ref<boolean>(false);
@@ -134,7 +140,18 @@ export function useOrderCreateDialog() {
 
     if (!isValid) return;
 
-    step.value++;
+    if (step.value < totalSteps) {
+      step.value++;
+      return;
+    }
+
+    const order: IOrder = {
+      client: clientData.value,
+      project: projectData.value,
+      finance: financeData.value,
+    };
+
+    createOrderMutation.mutate(order);
   }
 
   function backStep() {
@@ -146,6 +163,22 @@ export function useOrderCreateDialog() {
 
     step.value--;
   }
+
+  const createOrderMutation = useMutation({
+    mutationKey: ['create-order'],
+    mutationFn: async (order: IOrder) => {
+      return await createOrder(order);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['orders'] });
+      await queryClient.setQueryData(['orders'], []);
+      notifySuccess('Éxito', 'Orden creada exitosamente');
+      closeDialog();
+    },
+    onError: (error: unknown) => {
+      notifyError('Error', (error as Error).message);
+    },
+  });
 
   return {
     // Refs
@@ -169,5 +202,6 @@ export function useOrderCreateDialog() {
     closeDialog,
     nextStep,
     backStep,
+    createOrderMutation,
   };
 }
