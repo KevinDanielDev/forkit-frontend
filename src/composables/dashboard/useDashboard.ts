@@ -1,113 +1,188 @@
-import { ref } from 'vue';
+import { computed } from 'vue';
+
 import type { QTableColumn } from 'quasar';
+
+import { useOrder } from './order/useOrder';
+
+import type { IOrder } from 'src/models/interfaces/order/order.interface';
 
 /**
  * Composable for managing dashboard data and display configuration.
- * 
- * Provides dashboard statistics cards, table columns, mock order data, and formatting utilities.
- * Used to maintain mock data for development purposes with support for order status tracking,
- * financial information, and client details.
- * 
+ *
+ * Provides dashboard statistics cards, table columns configuration, reactive order data from Vue Query,
+ * and formatting utilities. Integrates with Vue Query for data fetching and caching.
+ *
  * @returns {Object} Dashboard data and utilities
  * @returns {Array<Object>} .cards - Array of statistic cards with icon, value, label, and color
  * @returns {Array<QTableColumn>} .columns - Quasar table column definitions for orders
- * @returns {Ref<Array>} .rows - Reactive array of mock order data
+ * @returns {ComputedRef<Array>} .orders - Reactive array of orders from Vue Query
  * @returns {Function} .formatMoney - Utility function to format numbers as currency strings
  * @returns {Object} .statusMap - Map of order statuses to color and background styling
- * 
+ * @returns {Object} .getOrderQuery - Vue Query object with loading, error, and data states
+ *
  * @example
- * const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
- * 
+ * const { cards, columns, orders, formatMoney, statusMap, getOrderQuery } = useDashboard();
+ *
+ * // Access orders reactively
+ * const allOrders = orders.value;
+ *
  * // Format currency
  * const formatted = formatMoney(1500); // Returns: "$1,500.00"
- * 
- * // Access status colors
- * const statusStyle = statusMap['En Progreso']; // Returns: { color: 'primary', bg: '...' }
+ *
+ * // Check loading state
+ * if (getOrderQuery.isLoading.value) { ... }
  */
 export function useDashboard() {
-  const cards = [
-    { icon: 'receipt', value: '5', label: 'Total Órdenes', color: 'primary' },
-    { icon: 'pending_actions', value: '1', label: 'Pendientes', color: 'orange' },
-    { icon: 'description', value: '2', label: 'En Progreso', color: 'primary' },
-    { icon: 'done_all', value: '2', label: 'Completadas', color: 'positive' },
-    { icon: 'account_balance', value: '$14,800.00', label: 'Ingresos Totales', color: 'info' },
-    { icon: 'assignment_turned_in', value: '$7,200.00', label: 'Por Cobrar', color: 'negative' },
+  const { getOrdersQuery } = useOrder();
+  const { data } = getOrdersQuery;
+
+  const orders = computed(() => {
+    if (!data.value) return [];
+    return Array.isArray(data.value) ? data.value : [data.value];
+  });
+
+  const formatMoney = (v: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+    }).format(v);
+  };
+
+  const cards = computed(() => {
+    const currentOrders = orders.value;
+
+    return [
+      { icon: 'receipt', value: currentOrders.length, label: 'Total Órdenes', color: 'primary' },
+      {
+        icon: 'pending_actions',
+        value: currentOrders.filter((order) => order.project.status === 'Pendiente').length,
+        label: 'Pendientes',
+        color: 'orange',
+      },
+      {
+        icon: 'description',
+        value: currentOrders.filter((order) => order.project.status === 'En Progreso').length,
+        label: 'En Progreso',
+        color: 'primary',
+      },
+      {
+        icon: 'done_all',
+        value: currentOrders.filter((order) => order.project.status === 'Completado').length,
+        label: 'Completadas',
+        color: 'positive',
+      },
+      {
+        icon: 'account_balance',
+        value: formatMoney(
+          currentOrders.reduce((acc, order) => acc + order.finance.totalAmount, 0),
+        ),
+        label: 'Ingresos Totales',
+        color: 'info',
+      },
+      {
+        icon: 'assignment_turned_in',
+        value: formatMoney(
+          currentOrders.reduce((acc, order) => acc + order.finance.depositAmount, 0),
+        ),
+        label: 'Por Cobrar',
+        color: 'negative',
+      },
+    ];
+  });
+
+  const columns: QTableColumn<IOrder>[] = [
+    {
+      name: 'id',
+      label: '#',
+      field: (row) => `0000${orders.value.indexOf(row) + 1}`,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'clientName',
+      label: 'Cliente',
+      field: (row) => row.client.name,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'projectName',
+      label: 'Proyecto',
+      field: (row) => row.project.title,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'clientPhone',
+      label: 'Teléfono',
+      field: (row) => row.client.phone,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'total',
+      label: 'Total',
+      field: (row) => formatMoney(row.finance.totalAmount),
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'paymentAmount',
+      label: 'Abono',
+      field: (row) => formatMoney(row.finance.depositAmount),
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'balance',
+      label: 'Saldo',
+      field: (row) => formatMoney(row.finance.totalAmount - row.finance.depositAmount),
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'delivery',
+      label: 'Entrega',
+      field: (row) => row.finance.deliveryDate,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'priority',
+      label: 'Prioridad',
+      field: (row) => row.project.priority,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'status',
+      label: 'Estado',
+      field: (row) => row.project.status,
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'actions',
+      label: 'Acciones',
+      field: () => '',
+      align: 'left',
+    },
   ];
 
-  const columns: QTableColumn[] = [
-    { name: 'id', label: '#', field: 'id', align: 'left' },
-    { name: 'client', label: 'Cliente', field: 'client', align: 'left', sortable: true },
-    { name: 'job', label: 'Trabajo', field: 'job', align: 'left' },
-    { name: 'total', label: 'Total', field: 'total', align: 'right', sortable: true },
-    { name: 'paymentAmount', label: 'Abono', field: 'paymentAmount', align: 'right' },
-    { name: 'delivery', label: 'Entrega', field: 'delivery', align: 'right' },
-    { name: 'status', label: 'Estado', field: 'status', align: 'center' },
-    { name: 'actions', label: 'Acciones', field: 'actions', align: 'center' },
-  ];
-
-  const rows = ref([
-    {
-      id: 1,
-      client: 'María García',
-      job: 'Diseño de Logo',
-      total: 1500,
-      paymentAmount: 800,
-      delivery: '14 may 2026',
-      status: 'En Progreso',
-    },
-    {
-      id: 2,
-      client: 'Carlos Rodríguez',
-      job: 'Sitio Web',
-      total: 5000,
-      paymentAmount: 2000,
-      delivery: '29 may 2026',
-      status: 'En Progreso',
-    },
-    {
-      id: 3,
-      client: 'Ana Martínez',
-      job: 'Fotografía de Producto',
-      total: 800,
-      paymentAmount: 800,
-      delivery: '9 may 2026',
-      status: 'Completado',
-    },
-    {
-      id: 4,
-      client: 'Luis Fernández',
-      job: 'Video Promocional',
-      total: 3500,
-      paymentAmount: 0,
-      delivery: '24 may 2026',
-      status: 'Pendiente',
-    },
-    {
-      id: 5,
-      client: 'Sofía Mendoza',
-      job: 'Branding Completo',
-      total: 4000,
-      paymentAmount: 4000,
-      delivery: '4 may 2026',
-      status: 'Entregado',
-    },
-  ]);
-
-  // Función de formateo (ahora utilizada en el template)
-  const formatMoney = (v: number) => '$' + v.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-
-  const statusMap: Record<string, { color: string; bg: string }> = {
-    'En Progreso': { color: 'primary', bg: 'rgba(var(--q-primary), 0.15)' },
-    Completado: { color: 'positive', bg: 'rgba(var(--q-positive), 0.15)' },
-    Pendiente: { color: 'negative', bg: 'rgba(var(--q-negative), 0.15)' },
-    Entregado: { color: 'info', bg: 'rgba(var(--q-info), 0.15)' },
+  const priorityMap: Record<string, { color: string; bg: string }> = {
+    Baja: { color: 'positive', bg: 'rgba(var(--q-positive), 0.15)' },
+    Media: { color: 'warning', bg: 'rgba(var(--q-warning), 0.15)' },
+    Alta: { color: 'negative', bg: 'rgba(var(--q-negative), 0.15)' },
+    Urgente: { color: 'orange', bg: 'rgba(var(--q-orange-12), 0.15)' },
   };
 
   return {
     cards,
     columns,
-    rows,
     formatMoney,
-    statusMap,
+    priorityMap,
+    getOrdersQuery,
+    orders,
   };
 }
