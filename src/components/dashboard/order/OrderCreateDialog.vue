@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
  * OrderCreateDialog — Multi-step order creation dialog component.
- * 
+ *
  * Renders a responsive modal dialog with three sequential steps for creating new orders:
  * 1. **Client Step** - Collect client contact information
  * 2. **Project Step** - Define project details and scope
  * 3. **Finance Step** - Set financial terms and payment schedule
- * 
+ *
  * **Features**
  * - Multi-step workflow with validation at each step
  * - Step progress indicator at top
@@ -15,44 +15,44 @@
  * - Slide-up/down animations
  * - Glassmorphism backdrop effect
  * - Persistent modal (can't dismiss without completing)
- * 
+ *
  * **Dialog Structure**
  * - **Header**: Title "Nueva Orden" with icon and progress indicator
  * - **Body**: Dynamic step content (scrollable on mobile)
  * - **Footer**: Navigation buttons (Back/Cancel, Next/Save)
- * 
+ *
  * **Step Validation**
  * - Each step validates form data before proceeding
  * - Client Step: Client name, email, phone required
  * - Project Step: Project title, priority, status required
  * - Finance Step: Dates and amounts required, calculates pending balance
- * 
+ *
  * **Data Handling**
  * - Collects data hierarchically (client, project, finance)
  * - Final step saves order to Parse database
  * - Shows success notification on completion
  * - Closes dialog and resets state after save
- * 
+ *
  * **Responsive Design**
  * - **Mobile** (<= sm): Full-width, max-height 70vh, responsive padding
  * - **Desktop** (> sm): Fixed-width card, max-height 55vh, xl padding
- * 
+ *
  * **API**
  * - Public method `openDialog()` exposed via defineExpose
  * - Called from DashboardPage or parent components
  * - Usage: `orderCreateDialogRef?.openDialog()`
- * 
+ *
  * @component
  * @example
  * // In parent component:
  * import OrderCreateDialog from 'src/components/dashboard/order/OrderCreateDialog.vue';
- * 
+ *
  * const orderDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(null);
- * 
+ *
  * // In template:
  * <OrderCreateDialog ref="orderDialogRef" />
  * <q-btn @click="orderDialogRef?.openDialog()" label="Create Order" />
- * 
+ *
  * @see useOrderCreateDialog - Composable managing dialog state and logic
  * @see ClientStep - First step component
  * @see ProjectStep - Second step component
@@ -68,6 +68,7 @@ const {
   step,
   isMobile,
   isDialogOpen,
+  isPending,
   clientStepRef,
   projectStepRef,
   financeStepRef,
@@ -144,6 +145,8 @@ defineExpose({ openDialog });
           color="primary"
           @click="nextStep()"
           class="fk-btn-action"
+          :loading="isPending"
+          :disable="isPending"
           no-caps
         />
       </q-card-actions>

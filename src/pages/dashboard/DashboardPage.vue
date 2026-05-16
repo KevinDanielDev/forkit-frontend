@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
  * DashboardPage — Main dashboard overview page.
- * 
+ *
  * Displays the primary dashboard with:
  * - Six key performance indicator (KPI) cards at the top
  * - Recent orders table with management actions
  * - Order creation dialog
- * 
+ *
  * **KPI Cards**
  * Statistics shown at the top:
  * - Total Orders
@@ -15,7 +15,7 @@
  * - Completed Orders
  * - Total Revenue
  * - Total Receivable (pending payments)
- * 
+ *
  * **Recent Orders Table**
  * - Displays last 5 orders with pagination
  * - Columns: Client Name, Project, Priority, Status, Actions
@@ -23,7 +23,7 @@
  * - Status indicators (Pending, In Progress, Completed)
  * - Delete action with confirmation
  * - Loading and error states
- * 
+ *
  * **Features**
  * - Real-time data from Vue Query (getOrdersQuery)
  * - Loading spinner during data fetch
@@ -31,21 +31,21 @@
  * - "New Order" button opens multi-step dialog
  * - Auto-refresh capability (manual refetch button)
  * - Delete functionality with mutation
- * 
+ *
  * **Data Sources**
  * - useDashboard(): Statistics, columns definition, priority map
  * - useOrder(): Orders data and delete mutation
- * 
+ *
  * **Responsive Design**
  * - Cards: 12 cols (mobile), 6 cols (tablet), 4 cols (desktop)
  * - Table: Full width with responsive text sizes
  * - Dialog: Responsive steps and layout
- * 
+ *
  * **Performance**
  * - Vue Query manages data caching and refetching
  * - Stale time: 5 minutes
  * - Retry: 1 attempt on failure
- * 
+ *
  * @component
  * @example
  * // Route: /dashboard or /dashboard/
@@ -61,12 +61,16 @@ import { useOrder } from 'src/composables/dashboard/order/useOrder';
 import { useDashboard } from 'src/composables/dashboard/useDashboard';
 
 import OrderCreateDialog from 'src/components/dashboard/order/OrderCreateDialog.vue';
+import OrderDetailDialog from 'src/components/dashboard/order/OrderDetailDialog.vue';
+import { useOrderDetailDialog } from 'src/composables/dashboard/order/useOrderDetailDialog';
 
 /** Dashboard statistics and table configuration */
 const { cards, columns, priorityMap, orders, getOrdersQuery } = useDashboard();
 /** Order operations (delete mutation) */
 const { deleteOrderMutation } = useOrder();
 const { isPending } = deleteOrderMutation;
+
+const { isOpenDetailDialog, openDialog } = useOrderDetailDialog();
 
 /** Reference to order creation dialog for opening it */
 const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(null);
@@ -153,7 +157,14 @@ const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(
 
           <template v-slot:body-cell-actions="props">
             <q-td :props="props" class="text-center">
-              <q-btn flat round color="primary" icon="visibility" size="sm" />
+              <q-btn
+                flat
+                round
+                color="primary"
+                icon="visibility"
+                size="sm"
+                @click="openDialog(props.row.objectId)"
+              />
               <q-btn
                 flat
                 round
@@ -170,6 +181,7 @@ const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(
     </q-card>
 
     <OrderCreateDialog ref="orderCreateDialogRef" />
+    <OrderDetailDialog v-model="isOpenDetailDialog" />
   </q-page>
 </template>
 

@@ -1,43 +1,43 @@
 <script setup lang="ts">
 /**
  * ClientStep — First step of order creation dialog.
- * 
+ *
  * Collects client contact information:
  * - Client Name
  * - Email address
  * - Country code (phone prefix)
  * - Phone number
  * - Optional company name
- * 
+ *
  * **Form Fields**
  * - Name: Required, client company or person name
  * - Email: Required, valid email format
  * - Country code: Required (e.g., +57, +1, +34)
  * - Phone: Required, format depends on country code
  * - Company: Optional, company name if different from name
- * 
+ *
  * **Validation**
  * - All fields required except company
  * - Email must be valid format
  * - Phone must match country code format
- * 
+ *
  * **Data Binding**
  * - Two-way binding with clientData from composable
  * - Persists across step navigation
- * 
+ *
  * **Public API**
  * - `validateForm()` method: Validates and returns boolean
  * - Called by parent (OrderCreateDialog) before proceeding
- * 
+ *
  * **Layout**
  * - Two-column grid on desktop, single column on mobile
  * - Form icons for visual clarity (person, email, phone)
- * 
+ *
  * @component
  * @example
  * // Used internally by OrderCreateDialog
  * <client-step ref="clientStepRef" />
- * 
+ *
  * // Validation in parent:
  * const isValid = await clientStepRef?.validateForm();
  */
@@ -98,8 +98,6 @@ defineExpose({ validateForm });
           outlined
           dense
           class="fk-field"
-          lazy-rules
-          :rules="rules.requiredEmail"
         >
           <template v-slot:prepend
             ><q-icon name="alternate_email" color="primary" class="opacity-50"
@@ -117,8 +115,6 @@ defineExpose({ validateForm });
               outlined
               dense
               class="fk-field"
-              lazy-rules
-              :rules="[rules.required()]"
             >
               <template v-slot:prepend
                 ><q-icon name="phone" color="primary" class="opacity-50" />
@@ -152,8 +148,6 @@ defineExpose({ validateForm });
           outlined
           dense
           class="fk-field"
-          lazy-rules
-          :rules="[rules.required()]"
         >
           <template v-slot:prepend
             ><q-icon name="business" color="primary" class="opacity-50"

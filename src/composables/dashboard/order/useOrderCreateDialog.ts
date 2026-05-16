@@ -186,6 +186,8 @@ export function useOrderCreateDialog() {
     },
   });
 
+  const { isPending } = createOrderMutation;
+
   return {
     // Refs
     step,
@@ -209,5 +211,6 @@ export function useOrderCreateDialog() {
     nextStep,
     backStep,
     createOrderMutation,
+    isPending,
   };
 }

@@ -1,77 +1,24 @@
 <script setup lang="ts">
 /**
  * DashboardLayout — Main application dashboard layout wrapper.
- * 
- * Provides the complete dashboard structure with:
- * - Top header with logo, theme toggle, and navigation
- * - Collapsible left sidebar with navigation menu
- * - Main content area for dashboard pages
- * - Responsive design (sidebar auto-hides on mobile)
- * 
- * **Layout Sections**
- * 1. **Header** - Contains logo, menu button, theme toggle
- * 2. **Sidebar/Drawer** - Navigation groups with menu items
- * 3. **Main content** - Renders child routes via RouterView
- * 
- * **Features**
- * - Dark/light theme toggle
- * - Sidebar toggle on desktop (always visible) and mobile (collapsed by default)
- * - Navigation menu organized by groups (Management, Analysis)
- * - Profile section at bottom with user avatar, name, role
- * - Logout functionality integrated in menu
- * - Responsive design with adaptive sidebar width
- * 
- * **Navigation Structure**
- * Menu groups are provided by useDashboardLayout composable:
- * - **Management**: Dashboard, Orders, Clients links
- * - **Analysis**: Reports, Finances links
- * - **Account**: Logout action
- * 
- * **Theme Integration**
- * - Theme toggle button in header changes dark/light mode
- * - Applied via useDashboardLayout.toggleTheme()
- * - Updates theme-store and Quasar dark mode
- * 
- * **User Profile Section**
- * - Displays user avatar (placeholder image)
- * - Shows user name and role
- * - Settings icon for future account settings
- * - App version and year displayed
- * 
- * **Responsive Behavior**
- * - **Desktop**: Sidebar always visible (280px width)
- * - **Tablet/Mobile**: Sidebar hidden by default, toggleable
- * - **Mobile**: Menu icon visible to toggle drawer
- * 
- * **Child Routes**
- * All dashboard pages render here via `<router-view />`:
- * - DashboardPage (main overview)
- * - OrderPage (orders management)
- * - ClientPage (clients management)
- * - ReportPage (analytics)
- * - FinancePage (financial reports)
- * 
- * @component
- * @example
- * // In routes configuration:
- * {
- *   path: '/dashboard',
- *   component: () => import('layouts/dashboard/DashboardLayout.vue'),
- *   beforeEnter: isAuthGuard,
- *   children: [
- *     { path: '', component: DashboardPage },
- *     { path: 'orders', component: OrderPage },
- *     ...
- *   ]
- * }
  */
 import { useDashboardLayout } from 'src/composables/layouts/useDashboardLayout';
 import { useAuth } from 'src/composables/auth/useAuth';
+import { useUser } from 'src/composables/user/useUser';
+import { computed } from 'vue';
 
 /** Logout mutation for handling user logout */
 const { logoutMutation } = useAuth();
 /** Layout state and navigation menu */
 const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboardLayout();
+
+// Extraemos tanto la query como sus flags de estado reactivos
+const { getCurrentUserQuery } = useUser();
+const { data, isLoading } = getCurrentUserQuery;
+
+const user = computed(() => {
+  return data.value || undefined;
+});
 </script>
 
 <template>
@@ -119,11 +66,9 @@ const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboa
               class="fk-nav-item q-mb-xs"
             >
               <q-item-section avatar><q-icon :name="item.icon" size="22px" /></q-item-section>
-              <q-item-section
-                ><q-item-label class="text-weight-medium">{{
-                  item.label
-                }}</q-item-label></q-item-section
-              >
+              <q-item-section>
+                <q-item-label class="text-weight-medium">{{ item.label }}</q-item-label>
+              </q-item-section>
             </q-item>
           </div>
         </q-list>
@@ -131,18 +76,38 @@ const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboa
         <q-space />
 
         <div class="q-mx-sm q-mb-md">
-          <q-item clickable v-ripple class="fk-profile-item">
+          <!-- ESTADO DE CARGA: Muestra un esqueleto fluido mientras Vue Query obtiene el usuario -->
+          <div
+            v-if="isLoading || !user"
+            class="fk-profile-item flex items-center no-wrap q-gutter-sm"
+          >
+            <q-skeleton type="QAvatar" size="40px" />
+            <div class="col">
+              <q-skeleton type="text" width="70%" height="20px" />
+              <q-skeleton type="text" width="50%" height="14px" />
+            </div>
+          </div>
+
+          <!-- ESTADO CARGADO: Muestra los datos una vez la query termina -->
+          <q-item v-else clickable v-ripple class="fk-profile-item">
             <q-item-section avatar>
-              <q-avatar size="40px"><img src="https://cdn.quasar.dev/img/avatar.png" /></q-avatar>
+              <q-avatar size="40px" color="primary" class="text-white">
+                {{ (user.name?.charAt(0) || '') + (user.lastName?.charAt(0) || '') }}
+              </q-avatar>
             </q-item-section>
             <q-item-section>
-              <q-item-label class="fk-text-weight-bold fk-text-contrast">John Doe</q-item-label>
-              <q-item-label caption class="text-primary text-weight-bold">Freelancer</q-item-label>
+              <q-item-label class="fk-text-weight-bold fk-text-contrast">
+                {{ user.name + ' ' + user.lastName }}
+              </q-item-label>
+              <q-item-label caption class="text-primary text-weight-bold">
+                {{ user.email }}
+              </q-item-label>
             </q-item-section>
-            <q-item-section side
-              ><q-icon name="settings" size="20px" class="text-grey-6"
-            /></q-item-section>
+            <q-item-section side>
+              <q-icon name="settings" size="20px" class="text-grey-6" />
+            </q-item-section>
           </q-item>
+
           <div class="text-center q-mt-sm">
             <div class="text-caption text-grey-13" style="font-size: 10px">
               Forkit v1.0.0 • 2026
@@ -195,10 +160,12 @@ const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboa
   background: rgba(128, 128, 128, 0.05);
   border: 1px solid rgba(128, 128, 128, 0.1);
   padding: 8px 12px;
-  &:hover {
-    background: rgba(var(--q-primary), 0.05);
-    border-color: rgba(var(--q-primary), 0.2);
-  }
+  min-height: 58px; /* Asegura una altura estable entre estados */
+}
+
+q-item.fk-profile-item:hover {
+  background: rgba(var(--q-primary), 0.05);
+  border-color: rgba(var(--q-primary), 0.2);
 }
 
 .fk-logo-text {
