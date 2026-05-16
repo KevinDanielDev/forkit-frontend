@@ -1,5 +1,57 @@
 <script setup lang="ts">
+/**
+ * WorkInProgress — Placeholder component for unfinished pages.
+ * 
+ * Displays a professional work-in-progress indicator for pages
+ * that are still under development. Used on OrderPage, ClientPage,
+ * FinancePage, and ReportPage.
+ * 
+ * **Features**
+ * - Construction icon with primary color glow
+ * - Dynamically displays page name (via prop)
+ * - "Coming Soon" message with V1 version indicator
+ * - Info card with encouraging message
+ * - Back to Dashboard button
+ * - Centered full-screen layout
+ * - Responsive design
+ * 
+ * **Props**
+ * - `pageName` (string, required) - Name of the page being developed
+ *   - Examples: "Órdenes", "Clientes", "Finanzas", "Reportes"
+ *   - Displayed in large heading
+ * 
+ * **UI Elements**
+ * - Construction icon (42px) with glowing background
+ * - Large page name heading (h4 weight-bold)
+ * - Subtitle: "Esta sección está bajo desarrollo para la V1"
+ * - Info card with icon and "Próximamente" (Coming Soon)
+ * - "Volver al Dashboard" button with back arrow
+ * 
+ * **Styling**
+ * - Primary color theme throughout
+ * - Dashed border info card
+ * - Semi-transparent background colors
+ * - Smooth shadow and glowing effects
+ * - Dark mode support
+ * 
+ * **Navigation**
+ * - Dashboard button links to `/dashboard`
+ * - Allows users to return from WIP pages
+ * 
+ * @component
+ * @example
+ * // In any page component:
+ * <WorkInProgress page-name="Órdenes" />
+ * <WorkInProgress page-name="Clientes" />
+ * <WorkInProgress page-name="Finanzas" />
+ * 
+ * @see OrderPage - Uses this component
+ * @see ClientPage - Uses this component
+ * @see FinancePage - Uses this component
+ * @see ReportPage - Uses this component
+ */
 defineProps<{
+  /** Name of the page under development */
   pageName: string;
 }>();
 </script>

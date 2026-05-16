@@ -1,6 +1,45 @@
 <script setup lang="ts">
+/**
+ * OrderStepProgress — Progress indicator component for multi-step dialog.
+ * 
+ * Displays visual indication of:
+ * - Linear progress bar (0-100%)
+ * - Three step labels (1. Cliente, 2. Proyecto, 3. Finanzas)
+ * - Current step highlight in primary color
+ * - "Requerido" (Required) subtitle for all steps
+ * 
+ * **Features**
+ * - Progress bar fills as user advances through steps
+ * - Step 1: 33%, Step 2: 66%, Step 3: 100%
+ * - Active step (current and completed) shown in primary color (blue)
+ * - Inactive steps shown in gray
+ * - Responsive layout (larger spacing on desktop)
+ * 
+ * **Progress Calculation**
+ * - Computed from step number: step / 3
+ * - Updated reactively as user navigates
+ * - Step 1: progress = 0.33
+ * - Step 2: progress = 0.66
+ * - Step 3: progress = 1.0
+ * 
+ * **Visual Design**
+ * - Thin progress bar (4px height)
+ * - Step labels with icon numbers
+ * - Required tag for all steps
+ * - Matches ForkIt design system
+ * 
+ * **Responsive**
+ * - Larger margins on desktop (q-mt-xl)
+ * - Smaller margins on mobile (q-mt-md)
+ * 
+ * @component
+ * @example
+ * // Used internally by OrderCreateDialog
+ * <order-step-progress />
+ */
 import { useOrderCreateDialog } from 'src/composables/dashboard/order/useOrderCreateDialog';
 
+/** Dialog state for step tracking and progress calculation */
 const { step, progress } = useOrderCreateDialog();
 </script>
 

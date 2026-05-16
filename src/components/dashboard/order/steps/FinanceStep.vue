@@ -1,4 +1,57 @@
 <script setup lang="ts">
+/**
+ * FinanceStep — Third and final step of order creation dialog.
+ * 
+ * Collects financial information and payment terms:
+ * - Project start date
+ * - Delivery/completion date
+ * - Total project amount
+ * - Deposit/down payment amount
+ * - Calculated pending balance
+ * 
+ * **Form Fields**
+ * - Start Date: Required, date picker (YYYY-MM-DD format)
+ * - Delivery Date: Required, date picker (YYYY-MM-DD format)
+ * - Total Amount: Required, numeric input in currency
+ * - Deposit Amount: Required, numeric input in currency
+ * - Pending Balance: Calculated field (readonly) = Total - Deposit
+ * 
+ * **Calculations**
+ * - Pending Amount = Total Amount - Deposit Amount
+ * - Automatically updated when amounts change
+ * - Shows remaining balance to be collected
+ * 
+ * **Validation**
+ * - All dates and amounts required
+ * - Deposit cannot exceed total amount
+ * - Start date should be before delivery date (soft validation)
+ * 
+ * **Data Binding**
+ * - Two-way binding with financeData from composable
+ * - Computed pendingAmount for display
+ * 
+ * **Public API**
+ * - `validateForm()` method: Validates and returns boolean
+ * - Called by parent (OrderCreateDialog) before saving
+ * 
+ * **Layout**
+ * - Left column (7/12): Date and amount inputs
+ * - Right column (5/12): Summary and pending amount display
+ * - Mobile: Stacked single column
+ * 
+ * **On Final Save**
+ * - Triggers order creation mutation
+ * - Saves complete order with all three sections
+ * - Closes dialog and resets state
+ * 
+ * @component
+ * @example
+ * // Used internally by OrderCreateDialog
+ * <finance-step ref="financeStepRef" />
+ * 
+ * // Validation in parent:
+ * const isValid = await financeStepRef?.validateForm();
+ */
 import { ref } from 'vue';
 
 import { QForm } from 'quasar';
@@ -10,10 +63,14 @@ import { useOrderCreateDialog } from 'src/composables/dashboard/order/useOrderCr
 const { ...rules } = useValidationRules();
 const { financeData, pendingAmount } = useOrderCreateDialog();
 
-// Refs
+/** Reference to the form for validation */
 const financeFormRef = ref<InstanceType<typeof QForm> | null>(null);
 
-// Methods
+/**
+ * Validates all form fields before saving order.
+ * @async
+ * @returns {Promise<boolean>} True if all fields are valid
+ */
 async function validateForm() {
   return financeFormRef.value ? await financeFormRef.value.validate() : false;
 }

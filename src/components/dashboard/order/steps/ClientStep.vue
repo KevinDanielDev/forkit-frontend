@@ -1,4 +1,46 @@
 <script setup lang="ts">
+/**
+ * ClientStep — First step of order creation dialog.
+ * 
+ * Collects client contact information:
+ * - Client Name
+ * - Email address
+ * - Country code (phone prefix)
+ * - Phone number
+ * - Optional company name
+ * 
+ * **Form Fields**
+ * - Name: Required, client company or person name
+ * - Email: Required, valid email format
+ * - Country code: Required (e.g., +57, +1, +34)
+ * - Phone: Required, format depends on country code
+ * - Company: Optional, company name if different from name
+ * 
+ * **Validation**
+ * - All fields required except company
+ * - Email must be valid format
+ * - Phone must match country code format
+ * 
+ * **Data Binding**
+ * - Two-way binding with clientData from composable
+ * - Persists across step navigation
+ * 
+ * **Public API**
+ * - `validateForm()` method: Validates and returns boolean
+ * - Called by parent (OrderCreateDialog) before proceeding
+ * 
+ * **Layout**
+ * - Two-column grid on desktop, single column on mobile
+ * - Form icons for visual clarity (person, email, phone)
+ * 
+ * @component
+ * @example
+ * // Used internally by OrderCreateDialog
+ * <client-step ref="clientStepRef" />
+ * 
+ * // Validation in parent:
+ * const isValid = await clientStepRef?.validateForm();
+ */
 import { ref } from 'vue';
 
 import { QForm } from 'quasar';
@@ -10,9 +52,14 @@ import { useOrderCreateDialog } from 'src/composables/dashboard/order/useOrderCr
 const { clientData } = useOrderCreateDialog();
 const { ...rules } = useValidationRules();
 
+/** Reference to the form for validation */
 const clientFormRef = ref<InstanceType<typeof QForm> | null>(null);
 
-// Methods
+/**
+ * Validates all form fields before proceeding to next step.
+ * @async
+ * @returns {Promise<boolean>} True if all fields are valid
+ */
 async function validateForm() {
   if (clientFormRef.value) {
     return await clientFormRef.value.validate();

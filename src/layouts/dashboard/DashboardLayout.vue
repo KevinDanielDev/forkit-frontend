@@ -1,8 +1,76 @@
 <script setup lang="ts">
+/**
+ * DashboardLayout — Main application dashboard layout wrapper.
+ * 
+ * Provides the complete dashboard structure with:
+ * - Top header with logo, theme toggle, and navigation
+ * - Collapsible left sidebar with navigation menu
+ * - Main content area for dashboard pages
+ * - Responsive design (sidebar auto-hides on mobile)
+ * 
+ * **Layout Sections**
+ * 1. **Header** - Contains logo, menu button, theme toggle
+ * 2. **Sidebar/Drawer** - Navigation groups with menu items
+ * 3. **Main content** - Renders child routes via RouterView
+ * 
+ * **Features**
+ * - Dark/light theme toggle
+ * - Sidebar toggle on desktop (always visible) and mobile (collapsed by default)
+ * - Navigation menu organized by groups (Management, Analysis)
+ * - Profile section at bottom with user avatar, name, role
+ * - Logout functionality integrated in menu
+ * - Responsive design with adaptive sidebar width
+ * 
+ * **Navigation Structure**
+ * Menu groups are provided by useDashboardLayout composable:
+ * - **Management**: Dashboard, Orders, Clients links
+ * - **Analysis**: Reports, Finances links
+ * - **Account**: Logout action
+ * 
+ * **Theme Integration**
+ * - Theme toggle button in header changes dark/light mode
+ * - Applied via useDashboardLayout.toggleTheme()
+ * - Updates theme-store and Quasar dark mode
+ * 
+ * **User Profile Section**
+ * - Displays user avatar (placeholder image)
+ * - Shows user name and role
+ * - Settings icon for future account settings
+ * - App version and year displayed
+ * 
+ * **Responsive Behavior**
+ * - **Desktop**: Sidebar always visible (280px width)
+ * - **Tablet/Mobile**: Sidebar hidden by default, toggleable
+ * - **Mobile**: Menu icon visible to toggle drawer
+ * 
+ * **Child Routes**
+ * All dashboard pages render here via `<router-view />`:
+ * - DashboardPage (main overview)
+ * - OrderPage (orders management)
+ * - ClientPage (clients management)
+ * - ReportPage (analytics)
+ * - FinancePage (financial reports)
+ * 
+ * @component
+ * @example
+ * // In routes configuration:
+ * {
+ *   path: '/dashboard',
+ *   component: () => import('layouts/dashboard/DashboardLayout.vue'),
+ *   beforeEnter: isAuthGuard,
+ *   children: [
+ *     { path: '', component: DashboardPage },
+ *     { path: 'orders', component: OrderPage },
+ *     ...
+ *   ]
+ * }
+ */
 import { useDashboardLayout } from 'src/composables/layouts/useDashboardLayout';
 import { useAuth } from 'src/composables/auth/useAuth';
 
+/** Logout mutation for handling user logout */
 const { logoutMutation } = useAuth();
+/** Layout state and navigation menu */
 const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboardLayout();
 </script>
 
