@@ -79,6 +79,22 @@ defineExpose({ validateForm });
       </div>
 
       <div class="col-12">
+        <label class="fk-label">Estado del Trabajo</label>
+        <q-select
+          v-model="projectData.status"
+          :options="['Pendiente', 'En Progreso', 'Completado']"
+          outlined
+          dense
+          class="fk-field q-mt-xs"
+          :rules="[rules.required()]"
+        >
+          <template v-slot:prepend
+            ><q-icon name="priority_high" color="primary" class="opacity-50"
+          /></template>
+        </q-select>
+      </div>
+
+      <div class="col-12">
         <label class="fk-label">Descripción</label>
         <q-input
           v-model="projectData.description"

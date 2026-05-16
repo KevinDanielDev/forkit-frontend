@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import { useOrder } from 'src/composables/dashboard/order/useOrder';
 import { useDashboard } from 'src/composables/dashboard/useDashboard';
+
 import OrderCreateDialog from 'src/components/dashboard/order/OrderCreateDialog.vue';
 
-const { cards, columns, rows, formatMoney, statusMap } = useDashboard();
+const { cards, columns, priorityMap, orders, getOrdersQuery } = useDashboard();
+const { deleteOrderMutation } = useOrder();
+const { isPending } = deleteOrderMutation;
 
 const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(null);
 </script>
@@ -45,10 +49,21 @@ const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(
       </q-card-section>
 
       <q-card-section>
+        <div v-if="getOrdersQuery.isLoading.value" class="text-center q-py-lg">
+          <q-spinner color="primary" size="50px" />
+          <div class="text-subtitle2 q-mt-md">Cargando órdenes...</div>
+        </div>
+
+        <div v-else-if="getOrdersQuery.isError.value" class="text-center q-py-lg">
+          <q-icon name="error" size="50px" color="negative" />
+          <div class="text-subtitle2 q-mt-md text-negative">Error al cargar las órdenes</div>
+        </div>
+
         <q-table
-          :rows="rows"
+          v-else
+          :rows="orders"
           :columns="columns"
-          row-key="client"
+          row-key="objectId"
           flat
           bordered
           :pagination="{ rowsPerPage: 5 }"
@@ -58,58 +73,37 @@ const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(
           no-results-label="No se encontraron resultados"
           class="fk-recent-orders-table"
         >
-          <template v-slot:body-cell-id="props">
-            <q-td :props="props" class="fk-text-weight-bold fk-text-contrast">
-              {{ props.row.id }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-client="props">
-            <q-td :props="props" class="fk-text-weight-bold fk-text-contrast">
-              {{ props.row.client }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-total="props">
-            <q-td :props="props" class="fk-text-contrast">
-              {{ formatMoney(props.row.total) }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-paymentAmount="props">
-            <q-td :props="props">
-              <span
-                class="text-weight-bold"
-                :class="
-                  props.row.paymentAmount === props.row.total
-                    ? 'text-positive'
-                    : props.row.paymentAmount === 0
-                      ? 'text-orange'
-                      : 'fk-paymentAmount-partial'
-                "
-              >
-                {{ formatMoney(props.row.paymentAmount) }}
-              </span>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-status="props">
+          <template v-slot:body-cell-priority="props">
             <q-td :props="props">
               <div
                 class="fk-status-badge text-caption text-weight-bold"
                 :style="{
-                  color: `var(--q-${statusMap[props.row.status]?.color})`,
-                  backgroundColor: statusMap[props.row.status]?.bg,
+                  color: `var(--q-${priorityMap[props.row.project.priority]?.color})`,
+                  backgroundColor: priorityMap[props.row.project.priority]?.bg,
                 }"
               >
-                {{ props.row.status }}
+                <q-badge
+                  :color="priorityMap[props.row.project.priority]?.color"
+                  :label="props.row.project.priority"
+                  text-color="black"
+                  class="text-capitalize q-pa-sm"
+                />
               </div>
             </q-td>
           </template>
 
           <template v-slot:body-cell-actions="props">
-            <q-td :props="props">
-              <q-btn flat round color="grey-6" icon="visibility" size="sm" />
+            <q-td :props="props" class="text-center">
+              <q-btn flat round color="primary" icon="visibility" size="sm" />
+              <q-btn
+                flat
+                round
+                color="negative"
+                :icon="isPending ? '' : 'delete'"
+                size="sm"
+                :loading="isPending"
+                @click="deleteOrderMutation.mutate(props.row.objectId)"
+              />
             </q-td>
           </template>
         </q-table>
@@ -121,7 +115,6 @@ const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(
 </template>
 
 <style lang="scss">
-/* Mantienes tus estilos SCSS actuales igual */
 .fk-recent-orders-table {
   border: none;
   thead tr th {
@@ -153,9 +146,11 @@ const orderCreateDialogRef = ref<InstanceType<typeof OrderCreateDialog> | null>(
   padding: 4px 14px;
   border-radius: 100px;
 }
+
 .fk-btn-new {
   border-radius: 8px;
 }
+
 .letter-spacing-1 {
   letter-spacing: 0.8px;
   line-height: 1.2;

@@ -2,13 +2,16 @@ import { ref, computed } from 'vue';
 
 import { useQuasar } from 'quasar';
 
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
+
+import { useNotify } from 'src/composables/common/useNotify';
+
+import { createOrder } from 'src/infrastructure/parse/order/order.service';
+
 import type { ClientStep, FinanceStep, ProjectStep } from 'src/components/dashboard/order/steps';
 
-import type { IClientData, IFinanceData, IProjectData } from 'src/models/interfaces/order';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { useNotify } from 'src/composables/common/useNotify';
-import { createOrder } from 'src/infrastructure/parse/order/order.service';
 import type { IOrder } from 'src/models/interfaces/order/order.interface';
+import type { IClientData, IFinanceData, IProjectData } from 'src/models/interfaces/order';
 
 // Refs Global
 const step = ref<number>(1);
@@ -23,6 +26,7 @@ const clientData = ref<IClientData>({
 const projectData = ref<IProjectData>({
   title: '',
   priority: 'Media',
+  status: 'Pendiente',
   description: '',
   files: [] as File[],
 });
@@ -101,6 +105,8 @@ export function useOrderCreateDialog() {
 
   function closeDialog() {
     isDialogOpen.value = false;
+    clearData();
+    step.value = 1;
   }
 
   function clearData() {
@@ -114,6 +120,7 @@ export function useOrderCreateDialog() {
     projectData.value = {
       title: '',
       priority: 'Media',
+      status: 'Pendiente',
       description: '',
       files: [] as File[],
     };
@@ -123,6 +130,7 @@ export function useOrderCreateDialog() {
       totalAmount: 0,
       depositAmount: 0,
     };
+    filesPreview.value = [];
   }
 
   async function nextStep() {
@@ -156,7 +164,6 @@ export function useOrderCreateDialog() {
 
   function backStep() {
     if (step.value === 1) {
-      clearData();
       closeDialog();
       return;
     }
@@ -171,7 +178,6 @@ export function useOrderCreateDialog() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['orders'] });
-      await queryClient.setQueryData(['orders'], []);
       notifySuccess('Éxito', 'Orden creada exitosamente');
       closeDialog();
     },
