@@ -1,58 +1,6 @@
 <script setup lang="ts">
-/**
- * ProjectStep — Second step of order creation dialog.
- * 
- * Collects project details and scope information:
- * - Project title/name
- * - Priority level (High, Medium, Low)
- * - Status (Pending, In Progress, Completed)
- * - Description
- * - File attachments (documents, images)
- * 
- * **Form Fields**
- * - Title: Required, project name (8-100 chars)
- * - Priority: Required, dropdown select
- * - Status: Required, predefined status options
- * - Description: Optional, detailed project description
- * - Files: Optional, file upload with preview
- * 
- * **File Handling**
- * - Accepts any file type
- * - Creates object URLs for image preview
- * - Automatically cleans up URLs on change or unmount
- * - Shows thumbnail previews for attached images
- * 
- * **Validation**
- * - All required fields must be filled
- * - Title length constraints (8-100 characters)
- * - At least one file may be required (configurable)
- * 
- * **Data Binding**
- * - Two-way binding with projectData from composable
- * - File list updates trigger preview regeneration
- * 
- * **Public API**
- * - `validateForm()` method: Validates and returns boolean
- * - Called by parent (OrderCreateDialog) before proceeding
- * 
- * **Layout**
- * - Title: 8/12 on desktop (large, prominent field)
- * - Priority + Status: 2/12 each on desktop (compact selection)
- * - Description: Full width
- * - File upload: Full width with preview area
- * 
- * @component
- * @example
- * // Used internally by OrderCreateDialog
- * <project-step ref="projectStepRef" />
- * 
- * // Validation in parent:
- * const isValid = await projectStepRef?.validateForm();
- */
-import { ref, watch } from 'vue';
-
+import { ref, watch, onUnmounted } from 'vue';
 import { QForm } from 'quasar';
-
 import { useValidationRules } from 'src/composables/common/useValidationRules';
 import { useOrderCreateDialog } from 'src/composables/dashboard/order/useOrderCreateDialog';
 
@@ -60,23 +8,27 @@ import { useOrderCreateDialog } from 'src/composables/dashboard/order/useOrderCr
 const { projectData, filesPreview } = useOrderCreateDialog();
 const { ...rules } = useValidationRules();
 
-/** Reference to the form for validation */
 const projectFormRef = ref<InstanceType<typeof QForm> | null>(null);
 
 /**
- * Watcher for file changes.
- * Generates object URLs for image preview and cleans up old URLs.
+ * Función para limpiar URLs de previsualización para evitar fugas de memoria.
+ */
+function cleanPreviews() {
+  filesPreview.value.forEach((url) => URL.revokeObjectURL(url));
+  filesPreview.value = [];
+}
+
+/**
+ * Watcher para generar previsualizaciones de imágenes locales (blob)
  */
 watch(
   () => projectData.value.files,
   (newFiles) => {
-    filesPreview.value.forEach((url) => URL.revokeObjectURL(url));
+    cleanPreviews();
 
-    if (!newFiles) {
-      filesPreview.value = [];
-      return;
-    }
+    if (!newFiles || newFiles.length === 0) return;
 
+    // Generamos nuevas URLs de objeto para los archivos tipo imagen
     filesPreview.value = newFiles
       .filter((file) => file.type.startsWith('image/'))
       .map((file) => URL.createObjectURL(file));
@@ -84,17 +36,15 @@ watch(
   { deep: true },
 );
 
-/**
- * Validates all form fields before proceeding to next step.
- * @async
- * @returns {Promise<boolean>} True if all fields are valid
- */
 async function validateForm() {
   if (projectFormRef.value) {
     return await projectFormRef.value.validate();
   }
   return false;
 }
+
+// Limpiar al desmontar el componente
+onUnmounted(() => cleanPreviews());
 
 defineExpose({ validateForm });
 </script>
@@ -137,7 +87,7 @@ defineExpose({ validateForm });
       </div>
 
       <div class="col-12">
-        <label class="fk-label">Estado del Trabajo</label>
+        <label class="fk-label">Estado Inicial</label>
         <q-select
           v-model="projectData.status"
           :options="['Pendiente', 'En Progreso', 'Completado']"
@@ -147,7 +97,7 @@ defineExpose({ validateForm });
           :rules="[rules.required()]"
         >
           <template v-slot:prepend
-            ><q-icon name="priority_high" color="primary" class="opacity-50"
+            ><q-icon name="loop" color="primary" class="opacity-50"
           /></template>
         </q-select>
       </div>
@@ -156,21 +106,17 @@ defineExpose({ validateForm });
         <label class="fk-label">Descripción</label>
         <q-input
           v-model="projectData.description"
-          placeholder="Ej. Diseño de página web, desarrollo de aplicación, etc..."
+          placeholder="Detalles del trabajo a realizar..."
           outlined
           dense
           type="textarea"
           rows="3"
           class="fk-field q-mt-xs"
-        >
-          <template v-slot:prepend
-            ><q-icon name="description" color="primary" class="opacity-50"
-          /></template>
-        </q-input>
+        />
       </div>
 
       <div class="col-12">
-        <label class="fk-label q-mb-xs block">Archivos</label>
+        <label class="fk-label q-mb-xs block">Evidencias / Fotos del Proyecto</label>
 
         <q-file
           v-model="projectData.files"
@@ -179,29 +125,18 @@ defineExpose({ validateForm });
           dense
           multiple
           append
+          use-chips
           class="fk-dropzone"
+          label="Haz clic para seleccionar o arrastra fotos aquí"
         >
           <template #prepend>
-            <div class="column items-center">
-              <q-icon name="cloud_upload" color="primary" size="md" />
-            </div>
-          </template>
-          <template #append>
-            <div class="column items-center">
-              <q-icon
-                v-if="projectData.files && projectData.files.length > 0"
-                name="close"
-                @click.stop.prevent="projectData.files = []"
-                color="negative"
-                size="sm"
-              />
-            </div>
+            <q-icon name="cloud_upload" color="primary" size="sm" />
           </template>
         </q-file>
 
         <div v-if="filesPreview.length > 0" class="row q-col-gutter-sm q-mt-sm">
           <div v-for="(src, index) in filesPreview" :key="index" class="col-4 col-sm-3 col-md-2">
-            <q-img :src="src" class="fk-preview-card shadow-1" :ratio="1"> </q-img>
+            <q-img :src="src" class="fk-preview-card shadow-2" :ratio="1"> </q-img>
           </div>
         </div>
       </div>
@@ -212,32 +147,28 @@ defineExpose({ validateForm });
 <style lang="scss" scoped>
 .fk-dropzone {
   :deep(.q-field__control) {
-    min-height: 100px;
+    min-height: 80px;
     cursor: pointer;
-    border: 2px dashed rgba(var(--q-primary), 0.2);
-    border-radius: 16px;
-    display: flex;
-    justify-content: center;
-    transition: all 0.3s ease;
+    border: 2px dashed rgba(var(--q-primary), 0.3);
+    border-radius: 12px;
+    background: rgba(var(--q-primary), 0.02);
     &:hover {
-      background: rgba(var(--q-primary), 0.02);
+      background: rgba(var(--q-primary), 0.05);
       border-color: var(--q-primary);
     }
   }
 }
 
-.fk-dialog-body {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  min-height: 0;
+.fk-preview-card {
+  border-radius: 8px;
+  border: 1px solid rgba(var(--q-primary), 0.1);
+  overflow: hidden;
 }
 
-.fk-preview-card {
-  border-radius: 12px;
-  border: 1px solid rgba(var(--q-primary), 0.1);
-  transition: transform 0.2s;
-  &:hover {
-    transform: scale(1.05);
-  }
+.fk-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--q-text-color);
+  opacity: 0.8;
 }
 </style>
