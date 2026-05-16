@@ -1,5 +1,5 @@
-export interface ICustomer {
-  id?: string | undefined;
+export interface ICustomerData {
+  objectId?: string | undefined;
   firstName: string;
   lastName: string;
   email?: string | undefined;
@@ -7,5 +7,6 @@ export interface ICustomer {
   phone: string | undefined;
   company?: string | undefined;
   isActive: boolean;
-  createdAt?: string | undefined;
 }
+
+export { ICustomerData };

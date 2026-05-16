@@ -1,76 +1,50 @@
 import { ref, computed } from 'vue';
+import { useQueryClient, useMutation, useQuery } from '@tanstack/vue-query';
 
-import type { ICustomer } from 'src/models/interfaces/customer/customer.interface';
+import { deleteCustomer, getCustomers } from 'src/infrastructure/parse/customer/customer.service';
+
+import { useNotify } from '../common/useNotify';
 
 export function useCustomer() {
+  const queryClient = useQueryClient();
+  const { notifyError, notifySuccess } = useNotify();
+
+  const customers = computed(() => {
+    const { data } = getCustomersQuery;
+    if (!data.value) return [];
+    return Array.isArray(data.value) ? data.value : [data.value];
+  });
+
   // Refs
-  const clients = ref<ICustomer[]>([
-    {
-      id: '00001',
-      firstName: 'Kevin',
-      lastName: 'Fajardo',
-      email: 'kevin.fajardo@email.com',
-      phone: '3018004367',
-      isActive: true,
-      createdAt: '2026-05-16',
-    },
-    {
-      id: '00002',
-      firstName: 'Alejandro',
-      lastName: 'Giraldo',
-      email: 'alejandro@diseno.com',
-      phone: '3124567890',
-      isActive: false,
-      createdAt: '2026-05-10',
-    },
-    {
-      id: '00003',
-      firstName: 'Beatriz',
-      lastName: 'Pinzón',
-      email: 'b.pinzon@ecomoda.co',
-      phone: '3009876543',
-      company: 'Ecomoda S.A.',
-      isActive: true,
-      createdAt: '2026-05-12',
-    },
-    {
-      id: '00004',
-      firstName: 'Carlos',
-      lastName: 'Mendoza',
-      email: 'carlos.mendoza@email.com',
-      phone: '3152223344',
-      isActive: true,
-      createdAt: '2026-05-15',
-    },
-  ]);
-  const searchQuery = ref('');
+  const searchQuery = ref<string>('');
 
   // Computed
   const kpiCards = computed(() => [
-    { value: clients.value.length, label: 'Clientes Totales', icon: 'people', color: 'primary' },
+    { value: customers.value.length, label: 'Clientes Totales', icon: 'people', color: 'primary' },
     {
-      value: clients.value.filter((c) => c.company !== undefined && c.isActive === true).length,
+      value: customers.value.filter((c) => c.company !== '' && c.isActive === true).length,
       label: 'Empresas Vinc.',
       icon: 'business',
       color: 'positive',
     },
     {
-      value: clients.value.filter((c) => c.isActive === true).length,
+      value: customers.value.filter((c) => c.isActive === true).length,
       label: 'Clientes Activos',
       icon: 'check_circle',
       color: 'info',
     },
   ]);
-  const filteredClients = computed(() => {
+  const filteredCustomers = computed(() => {
     const query = searchQuery.value.toLowerCase().trim();
-    if (!query) return clients.value;
+    if (!query) return customers.value;
 
-    return clients.value.filter(
-      (client) =>
-        client.firstName.toLowerCase().includes(query) ||
-        client.lastName.toLowerCase().includes(query) ||
-        (client.email && client.email.toLowerCase().includes(query)) ||
-        (client.company && client.company.toLowerCase().includes(query)),
+    return customers.value.filter(
+      (customer) =>
+        customer.firstName.toLowerCase().includes(query) ||
+        customer.lastName.toLowerCase().includes(query) ||
+        (customer.email && customer.email.toLowerCase().includes(query)) ||
+        (customer.company && customer.company.toLowerCase().includes(query)) ||
+        (customer.phone && customer.phone.includes(query)),
     );
   });
 
@@ -84,10 +58,35 @@ export function useCustomer() {
       .slice(0, 2);
   };
 
+  const getCustomersQuery = useQuery({
+    queryKey: ['customers'],
+    queryFn: async () => await getCustomers(),
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const deleteCustomerMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await deleteCustomer(id);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['customers'] });
+      notifySuccess('Éxito', 'Cliente eliminado exitosamente');
+    },
+    onError: (error: unknown) => {
+      notifyError('Error', (error as Error).message);
+    },
+  });
+
+  const { isPending } = deleteCustomerMutation;
+
   return {
     kpiCards,
-    filteredClients,
+    customers,
+    filteredCustomers,
     searchQuery,
+    isPending,
     getInitials,
+    deleteCustomerMutation,
   };
 }

@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import KpiCard from 'src/components/common/KpiCard.vue';
+import CustomerCreateDialog from 'src/components/dashboard/customer/CustomerCreateDialog.vue';
+import { useCreateCustomerDialog } from 'src/composables/customer/useCreateCustomerDialog';
 
 import { useCustomer } from 'src/composables/customer/useCustomer';
 
-const { kpiCards, filteredClients, searchQuery, getInitials } = useCustomer();
+const { kpiCards, filteredCustomers, searchQuery, getInitials, deleteCustomerMutation, isPending } =
+  useCustomer();
+const { isDialogOpen, openDialog } = useCreateCustomerDialog();
 </script>
 
 <template>
@@ -38,13 +42,14 @@ const { kpiCards, filteredClients, searchQuery, getInitials } = useCustomer();
             icon="add"
             color="primary"
             unelevated
+            @click="openDialog()"
             class="fk-btn-new text-capitalize q-px-md text-weight-bold"
           />
         </div>
       </q-card-section>
 
       <q-card-section
-        v-if="filteredClients.length === 0"
+        v-if="filteredCustomers.length === 0"
         class="column items-center justify-center text-center q-pa-xl fk-empty-box"
       >
         <q-icon name="person_search" size="xl" class="text-grey-5 q-mb-sm" />
@@ -59,24 +64,25 @@ const { kpiCards, filteredClients, searchQuery, getInitials } = useCustomer();
       <q-card-section v-else>
         <div class="row q-col-gutter-md">
           <div
-            v-for="client in filteredClients"
-            :key="client.id"
+            v-for="(customer, index) in filteredCustomers"
+            :key="customer.objectId"
             class="col-12 col-sm-6 col-md-4 col-lg-3"
           >
             <div class="fk-premium-card-item q-pa-md column justify-between">
               <div>
                 <div class="row items-center justify-between no-wrap q-mb-md">
-                  <span class="client-id-badge">#{{ client.id }}</span>
-                  <q-btn flat round dense icon="more_horiz" size="xs" color="grey-5">
-                    <q-menu auto-close>
-                      <q-list dense style="min-width: 100px">
-                        <q-item clickable><q-item-section>Editar</q-item-section></q-item>
-                        <q-item clickable class="text-negative"
-                          ><q-item-section>Eliminar</q-item-section></q-item
-                        >
-                      </q-list>
-                    </q-menu>
-                  </q-btn>
+                  <span class="client-id-badge">#{{ index + 1 }}</span>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    icon="delete"
+                    size="sm"
+                    color="negative"
+                    :loading="isPending"
+                    :disable="isPending"
+                    @click="deleteCustomerMutation.mutate(customer.objectId!)"
+                  />
                 </div>
 
                 <div class="row items-center no-wrap q-gutter-x-sm q-mb-sm">
@@ -86,17 +92,17 @@ const { kpiCards, filteredClients, searchQuery, getInitials } = useCustomer();
                     text-color="blue-2"
                     class="text-weight-bold text-caption"
                   >
-                    {{ getInitials(client.firstName + ' ' + client.lastName) }}
+                    {{ getInitials(customer.firstName + ' ' + customer.lastName) }}
                   </q-avatar>
                   <div class="text-body1 text-weight-bold fk-text-contrast ellipsis">
-                    {{ client.firstName + ' ' + client.lastName }}
+                    {{ customer.firstName + ' ' + customer.lastName }}
                   </div>
                 </div>
 
                 <div class="row items-center no-wrap q-gutter-x-xs q-mb-md">
                   <q-icon name="business" size="16px" class="text-grey-5 shrink-0" />
                   <span class="text-caption text-muted ellipsis q-pl-xs">
-                    {{ client.company || 'Sin Empresa asignada' }}
+                    {{ customer.company !== '' ? customer.company : 'Sin Empresa asignada' }}
                   </span>
                 </div>
               </div>
@@ -106,13 +112,24 @@ const { kpiCards, filteredClients, searchQuery, getInitials } = useCustomer();
                   class="row items-center no-wrap q-gutter-x-xs text-caption text-muted ellipsis q-mb-xs"
                 >
                   <q-icon name="smartphone" size="16px" class="text-grey-5 shrink-0" />
-                  <span class="select-all q-pl-xs">{{ client.phone }}</span>
+                  <span class="select-all q-pl-xs">{{ customer.phone }}</span>
                 </div>
                 <div
                   class="row items-center no-wrap q-gutter-x-xs text-caption text-muted ellipsis"
                 >
                   <q-icon name="mail" size="16px" class="text-grey-5 shrink-0" />
-                  <span class="select-all q-pl-xs">{{ client.email }}</span>
+                  <span class="select-all q-pl-xs">{{
+                    customer.email !== '' ? customer.email : 'Sin email registrado'
+                  }}</span>
+                </div>
+                <div class="row items-center q-mt-sm">
+                  <q-badge
+                    :color="customer.isActive ? 'positive' : 'grey-7'"
+                    :text-color="customer.isActive ? 'white' : 'white'"
+                    :label="customer.isActive ? 'Activo' : 'Inactivo'"
+                    class="text-weight-bold q-px-sm q-py-xs rounded-md"
+                    style="border-radius: 4px"
+                  />
                 </div>
               </div>
             </div>
@@ -120,6 +137,8 @@ const { kpiCards, filteredClients, searchQuery, getInitials } = useCustomer();
         </div>
       </q-card-section>
     </q-card>
+
+    <customer-create-dialog v-model="isDialogOpen" />
   </q-page>
 </template>
 
