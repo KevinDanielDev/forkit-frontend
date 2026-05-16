@@ -1,4 +1,50 @@
 <script setup lang="ts">
+/**
+ * SignInPage — User authentication (login) page.
+ * 
+ * Renders the sign-in form allowing existing users to authenticate with their credentials.
+ * Includes email and password inputs with validation, animated Lottie background,
+ * and navigation to sign-up for new users.
+ * 
+ * **Features**
+ * - Email input with required and format validation
+ * - Password input with visibility toggle
+ * - Animated Lottie background
+ * - Loading spinner during authentication
+ * - Link to sign-up page for new users
+ * - Responsive design (mobile & desktop)
+ * - Forgot password link (UI only, not yet implemented)
+ * 
+ * **State Management**
+ * - email: User's email address (ref)
+ * - password: User's password (ref)
+ * - isPasswordVisible: Password visibility toggle (ref)
+ * - isPending: Loading state from authentication mutation
+ * 
+ * **Authentication Flow**
+ * 1. User enters email and password
+ * 2. Click "Sign In" or press Enter
+ * 3. Mutation sends credentials to Parse backend
+ * 4. On success: Redirects to dashboard, shows success notification
+ * 5. On error: Shows error notification, form stays visible
+ * 
+ * **Validation Rules**
+ * - Email: Required + valid email format
+ * - Password: Required + meets security requirements
+ * 
+ * **Styling**
+ * - Responsive padding (xl on desktop, md on mobile)
+ * - Glassmorphism card design
+ * - Primary color buttons and links
+ * - Dark mode support (custom shadow for dark theme)
+ * 
+ * @component
+ * @example
+ * // In router:
+ * { path: 'sign-in', name: 'sign-in', component: () => import('pages/auth/SignInPage.vue') }
+ * 
+ * // Access at /auth/sign-in
+ */
 import { ref } from 'vue';
 import { Vue3Lottie } from 'vue3-lottie';
 
@@ -12,12 +58,18 @@ const { signInMutation } = useAuth();
 const { isPending } = signInMutation;
 const { ...rules } = useValidationRules();
 
-// Refs
+// Form state
+/** @type {Ref<string>} User's email address */
 const email = ref<string>('');
+/** @type {Ref<string>} User's password */
 const password = ref<string>('');
+/** @type {Ref<boolean>} Controls password field visibility */
 const isPasswordVisible = ref<boolean>(false);
 
-// Methods
+/**
+ * Handles the sign-in form submission.
+ * Triggers the authentication mutation with email and password.
+ */
 function handleSignIn() {
   signInMutation.mutate({ email: email.value, password: password.value });
 }

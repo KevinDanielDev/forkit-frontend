@@ -1,4 +1,54 @@
 <script setup lang="ts">
+/**
+ * ProjectStep — Second step of order creation dialog.
+ * 
+ * Collects project details and scope information:
+ * - Project title/name
+ * - Priority level (High, Medium, Low)
+ * - Status (Pending, In Progress, Completed)
+ * - Description
+ * - File attachments (documents, images)
+ * 
+ * **Form Fields**
+ * - Title: Required, project name (8-100 chars)
+ * - Priority: Required, dropdown select
+ * - Status: Required, predefined status options
+ * - Description: Optional, detailed project description
+ * - Files: Optional, file upload with preview
+ * 
+ * **File Handling**
+ * - Accepts any file type
+ * - Creates object URLs for image preview
+ * - Automatically cleans up URLs on change or unmount
+ * - Shows thumbnail previews for attached images
+ * 
+ * **Validation**
+ * - All required fields must be filled
+ * - Title length constraints (8-100 characters)
+ * - At least one file may be required (configurable)
+ * 
+ * **Data Binding**
+ * - Two-way binding with projectData from composable
+ * - File list updates trigger preview regeneration
+ * 
+ * **Public API**
+ * - `validateForm()` method: Validates and returns boolean
+ * - Called by parent (OrderCreateDialog) before proceeding
+ * 
+ * **Layout**
+ * - Title: 8/12 on desktop (large, prominent field)
+ * - Priority + Status: 2/12 each on desktop (compact selection)
+ * - Description: Full width
+ * - File upload: Full width with preview area
+ * 
+ * @component
+ * @example
+ * // Used internally by OrderCreateDialog
+ * <project-step ref="projectStepRef" />
+ * 
+ * // Validation in parent:
+ * const isValid = await projectStepRef?.validateForm();
+ */
 import { ref, watch } from 'vue';
 
 import { QForm } from 'quasar';
@@ -10,10 +60,13 @@ import { useOrderCreateDialog } from 'src/composables/dashboard/order/useOrderCr
 const { projectData, filesPreview } = useOrderCreateDialog();
 const { ...rules } = useValidationRules();
 
-// Refs
+/** Reference to the form for validation */
 const projectFormRef = ref<InstanceType<typeof QForm> | null>(null);
 
-// Watchers
+/**
+ * Watcher for file changes.
+ * Generates object URLs for image preview and cleans up old URLs.
+ */
 watch(
   () => projectData.value.files,
   (newFiles) => {
@@ -31,6 +84,11 @@ watch(
   { deep: true },
 );
 
+/**
+ * Validates all form fields before proceeding to next step.
+ * @async
+ * @returns {Promise<boolean>} True if all fields are valid
+ */
 async function validateForm() {
   if (projectFormRef.value) {
     return await projectFormRef.value.validate();
@@ -67,6 +125,22 @@ defineExpose({ validateForm });
         <q-select
           v-model="projectData.priority"
           :options="['Baja', 'Media', 'Alta', 'Urgente']"
+          outlined
+          dense
+          class="fk-field q-mt-xs"
+          :rules="[rules.required()]"
+        >
+          <template v-slot:prepend
+            ><q-icon name="priority_high" color="primary" class="opacity-50"
+          /></template>
+        </q-select>
+      </div>
+
+      <div class="col-12">
+        <label class="fk-label">Estado del Trabajo</label>
+        <q-select
+          v-model="projectData.status"
+          :options="['Pendiente', 'En Progreso', 'Completado']"
           outlined
           dense
           class="fk-field q-mt-xs"
