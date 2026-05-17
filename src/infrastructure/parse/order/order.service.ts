@@ -50,11 +50,10 @@ async function createOrder(order: IOrder) {
   const newOrder = new Parse.Object('Order');
 
   // Datos del Cliente
-  newOrder.set('clientName', order.client.name);
-  newOrder.set('clientEmail', order.client.email);
-  newOrder.set('clientCountryCode', order.client.countryCode);
-  newOrder.set('clientPhone', order.client.phone);
-  newOrder.set('clientCompany', order.client.company);
+  console.log(order.customer);
+  const customer = new Parse.Object('Customer');
+  customer.id = order.customer.objectId;
+  newOrder.set('customer', customer);
 
   // Datos del Proyecto
   newOrder.set('projectName', order.project.title);
@@ -116,20 +115,35 @@ async function createOrder(order: IOrder) {
  *   console.log(`Total: $${order.finance.totalAmount}`);
  * });
  */
-async function getOrders() {
+async function getOrders(): Promise<IOrder[]> {
   const query = new Parse.Query('Order');
+  query.include('customer');
   const orders = await query.find();
 
   const ordersDisplay: IOrder[] = orders.map((order: Parse.Object) => {
+    const customer = order.get('customer');
+
     return {
       objectId: order.id!,
-      client: {
-        name: order.get('clientName'),
-        email: order.get('clientEmail'),
-        countryCode: order.get('clientCountryCode'),
-        phone: order.get('clientPhone'),
-        company: order.get('clientCompany'),
-      },
+      customer: customer
+        ? {
+            objectId: customer.id,
+            firstName: customer.get('firstName') || '',
+            lastName: customer.get('lastName') || '',
+            email: customer.get('email') || 'Sin email registrado',
+            countryCode: customer.get('countryCode') || '',
+            phone: customer.get('phone') || '',
+            company: customer.get('company') || '',
+          }
+        : {
+            objectId: '',
+            firstName: 'Cliente',
+            lastName: 'No Encontrado',
+            email: '',
+            countryCode: '',
+            phone: '',
+            company: '',
+          },
       project: {
         title: order.get('projectName'),
         priority: order.get('priority'),
@@ -140,8 +154,8 @@ async function getOrders() {
       finance: {
         startDate: order.get('startDate'),
         deliveryDate: order.get('deliveryDate'),
-        totalAmount: Number(order.get('totalAmount')),
-        depositAmount: Number(order.get('depositAmount')),
+        totalAmount: Number(order.get('totalAmount') || 0),
+        depositAmount: Number(order.get('depositAmount') || 0),
       },
     };
   });

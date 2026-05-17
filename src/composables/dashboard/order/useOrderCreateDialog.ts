@@ -11,18 +11,24 @@ import { createOrder } from 'src/infrastructure/parse/order/order.service';
 import type { ClientStep, FinanceStep, ProjectStep } from 'src/components/dashboard/order/steps';
 
 import type { IOrder } from 'src/models/interfaces/order/order.interface';
-import type { IClientData, IFinanceData, IProjectData } from 'src/models/interfaces/order';
+import type { IFinanceData, IProjectData } from 'src/models/interfaces/order';
+import type { ICustomerData } from 'src/models/interfaces/customer/customer-data.interface';
 
 // Refs Global
 const step = ref<number>(1);
 const filesPreview = ref<string[]>([]);
-const clientData = ref<IClientData>({
-  name: '',
+
+// clientData adaptado exactamente a lo que consumen los q-inputs del paso de orden
+const customerData = ref<ICustomerData>({
+  firstName: '',
+  lastName: '',
   email: '',
   countryCode: '',
   phone: '',
   company: '',
+  isActive: true,
 });
+
 const projectData = ref<IProjectData>({
   title: '',
   priority: 'Media',
@@ -30,6 +36,7 @@ const projectData = ref<IProjectData>({
   description: '',
   files: [] as File[],
 });
+
 const financeData = ref<IFinanceData>({
   startDate: '',
   deliveryDate: '',
@@ -42,43 +49,6 @@ const totalSteps = 3;
 
 /**
  * Composable for managing the multi-step order creation dialog state and navigation.
- *
- * Handles a 3-step order creation process (Client → Project → Finance) with form validation,
- * data persistence across steps, and mobile-responsive UI. Manages dialog state, step navigation,
- * data clearing, and progress tracking.
- *
- * @returns {Object} Dialog state, refs, computed properties, and methods
- * @returns {Ref<number>} .step - Current step number (1-3)
- * @returns {Ref<boolean>} .isDialogOpen - Dialog visibility state
- * @returns {TemplateRef} .clientStepRef - Template ref to ClientStep component
- * @returns {TemplateRef} .projectStepRef - Template ref to ProjectStep component
- * @returns {TemplateRef} .financeStepRef - Template ref to FinanceStep component
- * @returns {Ref<IClientData>} .clientData - Reactive client form data
- * @returns {Ref<IProjectData>} .projectData - Reactive project form data
- * @returns {Ref<IFinanceData>} .financeData - Reactive finance form data
- * @returns {Ref<Array<string>>} .filesPreview - Array of file preview URLs
- * @returns {ComputedRef<number>} .progress - Progress ratio (0-1)
- * @returns {ComputedRef<boolean>} .isMobile - Whether screen is mobile size (< md breakpoint)
- * @returns {ComputedRef<number>} .pendingAmount - Remaining amount to collect (total - deposit)
- * @returns {Function} .openDialog - Toggle dialog visibility
- * @returns {Function} .closeDialog - Close dialog and reset state
- * @returns {Function} .nextStep - Validate current step and advance to next
- * @returns {Function} .backStep - Go to previous step or close dialog if on step 1
- *
- * @example
- * const {
- *   step, isDialogOpen, clientData, projectData, financeData,
- *   openDialog, closeDialog, nextStep, backStep
- * } = useOrderCreateDialog();
- *
- * // Open dialog
- * openDialog();
- *
- * // Progress to next step (with validation)
- * await nextStep();
- *
- * // Go back
- * backStep();
  */
 export function useOrderCreateDialog() {
   const $q = useQuasar();
@@ -110,12 +80,14 @@ export function useOrderCreateDialog() {
   }
 
   function clearData() {
-    clientData.value = {
-      name: '',
+    customerData.value = {
+      firstName: '',
+      lastName: '',
       email: '',
       countryCode: '',
       phone: '',
       company: '',
+      isActive: true,
     };
     projectData.value = {
       title: '',
@@ -154,7 +126,7 @@ export function useOrderCreateDialog() {
     }
 
     const order: IOrder = {
-      client: clientData.value,
+      customer: customerData.value,
       project: projectData.value,
       finance: financeData.value,
     };
@@ -195,7 +167,7 @@ export function useOrderCreateDialog() {
     clientStepRef,
     projectStepRef,
     financeStepRef,
-    clientData,
+    customerData,
     projectData,
     financeData,
     filesPreview,

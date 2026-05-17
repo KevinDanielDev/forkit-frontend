@@ -1,5 +1,5 @@
 import Parse from 'parse';
-import type { ICustomerData } from 'src/models/interfaces/order';
+import type { ICustomerData } from 'src/models/interfaces/customer/customer-data.interface';
 
 async function createCustomer(customer: ICustomerData) {
   const user = Parse.User.current();

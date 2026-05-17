@@ -109,13 +109,17 @@ const { formatMoney } = useDashboard();
                   <div class="row items-center q-mb-md">
                     <q-avatar size="44px" color="primary" class="text-white text-weight-bold">
                       {{
-                        order.client?.name?.charAt(0).toUpperCase() ||
-                        order.client?.company?.charAt(0).toUpperCase()
+                        order.customer?.firstName?.charAt(0).toUpperCase() ||
+                        order.customer?.company?.charAt(0).toUpperCase()
                       }}
                     </q-avatar>
                     <div class="q-ml-md">
                       <div class="text-subtitle1 text-weight-bold fk-text-contrast">
-                        {{ order.client?.name || order.client?.company || 'Cliente desconocido' }}
+                        {{
+                          `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}` ||
+                          order.customer?.company ||
+                          'Cliente desconocido'
+                        }}
                       </div>
                     </div>
                   </div>
@@ -123,13 +127,13 @@ const { formatMoney } = useDashboard();
                     <div class="col-6">
                       <div class="text-caption text-grey-6">Teléfono</div>
                       <div class="text-weight-bold fk-text-contrast">
-                        {{ order.client?.phone || 'Sin número registrado' }}
+                        {{ order.customer?.phone || 'Sin número registrado' }}
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="text-caption text-grey-6">Email</div>
                       <div class="text-weight-bold text-primary text-truncate">
-                        {{ order.client?.email || 'Sin email registrado' }}
+                        {{ order.customer?.email || 'Sin email registrado' }}
                       </div>
                     </div>
                   </div>

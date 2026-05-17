@@ -95,7 +95,7 @@ interface IOrder {
   /** Parse Object ID - unique identifier in database (undefined until saved) */
   objectId?: string;
   /** Client and contact information */
-  client: IClientData;
+  customer: IClientData;
   /** Project scope, title, and management details */
   project: IProjectData;
   /** Financial terms, amounts, and timeline */

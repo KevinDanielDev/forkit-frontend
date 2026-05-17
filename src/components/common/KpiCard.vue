@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   kpiCards: Array<{
-    value: number;
+    value: number | string;
     label: string;
     icon: string;
     color: string;

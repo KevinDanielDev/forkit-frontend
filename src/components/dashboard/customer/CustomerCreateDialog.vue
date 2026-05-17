@@ -5,7 +5,7 @@
  */
 
 import { useValidationRules } from 'src/composables/common/useValidationRules';
-import { useCreateCustomerDialog } from 'src/composables/customer/useCreateCustomerDialog';
+import { useCreateCustomerDialog } from 'src/composables/dashboard/customer/useCreateCustomerDialog';
 
 // Composables
 const { ...rules } = useValidationRules();

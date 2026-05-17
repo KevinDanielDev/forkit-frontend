@@ -4,9 +4,9 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query';
 
 import { createCustomer } from 'src/infrastructure/parse/customer/customer.service';
 
-import { useNotify } from '../common/useNotify';
+import { useNotify } from 'src/composables/common/useNotify';
 
-import type { ICustomerData } from 'src/models/interfaces/order';
+import type { ICustomerData } from 'src/models/interfaces/customer/customer-data.interface';
 
 // Refs
 const customerData = ref<ICustomerData>({

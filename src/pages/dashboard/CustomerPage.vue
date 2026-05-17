@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import KpiCard from 'src/components/common/KpiCard.vue';
-import CustomerCreateDialog from 'src/components/dashboard/customer/CustomerCreateDialog.vue';
-import { useCreateCustomerDialog } from 'src/composables/customer/useCreateCustomerDialog';
 
-import { useCustomer } from 'src/composables/customer/useCustomer';
+import { useCustomer } from 'src/composables/dashboard/customer/useCustomer';
+import CustomerCreateDialog from 'src/components/dashboard/customer/CustomerCreateDialog.vue';
+import { useCreateCustomerDialog } from 'src/composables/dashboard/customer/useCreateCustomerDialog';
 
 const { kpiCards, filteredCustomers, searchQuery, getInitials, deleteCustomerMutation, isPending } =
   useCustomer();
