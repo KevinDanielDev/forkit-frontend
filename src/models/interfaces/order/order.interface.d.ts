@@ -1,27 +1,27 @@
-import type { IClientData } from './client-data.interface';
+import type { IClientData } from '../customer/customer-data.interface';
 import type { IFinanceData } from './finance-data.interface';
 import type { IProjectData } from './project-data.interface';
 
 /**
  * Complete order object structure representing a freelance project assignment.
- * 
+ *
  * Combines client information, project details, and financial terms into
  * a single entity. Used throughout the application for order creation,
  * display, and management.
- * 
+ *
  * **Structure**
  * The interface organizes order data into three main categories:
  * - **Client**: Contact and company information of the client hiring
  * - **Project**: Task, scope, and project management details
  * - **Finance**: Payment terms, amounts, and timeline
- * 
+ *
  * **Lifecycle**
  * - Created: Order is created in the order creation dialog with user input
  * - Saved: Sent to Parse backend, objectId is generated
  * - Retrieved: Fetched from database with hierarchical structure
  * - Updated: Can modify individual sections (client, project, finance)
  * - Deleted: Removed from database by objectId
- * 
+ *
  * **Properties**
  * @interface IOrder
  * @property {string} [objectId] - Parse Object ID (generated after save, undefined before)
@@ -45,7 +45,7 @@ import type { IProjectData } from './project-data.interface';
  *   - deliveryDate: Expected delivery date (ISO format: YYYY-MM-DD)
  *   - totalAmount: Total project cost in numbers (e.g., 5000)
  *   - depositAmount: Deposit/down payment amount (e.g., 2500)
- * 
+ *
  * @example
  * // Creating a new order (before saving)
  * const newOrder: IOrder = {
@@ -70,11 +70,11 @@ import type { IProjectData } from './project-data.interface';
  *     depositAmount: 2500
  *   }
  * };
- * 
+ *
  * // After saving to database
  * const savedOrder = await createOrder(newOrder);
  * console.log(savedOrder.objectId); // 'abc123def456'
- * 
+ *
  * @example
  * // Retrieving orders from database
  * const orders = await getOrders();
@@ -83,7 +83,7 @@ import type { IProjectData } from './project-data.interface';
  *   // All orders have objectId from database
  *   console.log(`ID: ${order.objectId}`);
  * });
- * 
+ *
  * @see IClientData - Client contact information
  * @see IProjectData - Project details and scope
  * @see IFinanceData - Financial terms and amounts
@@ -95,7 +95,7 @@ interface IOrder {
   /** Parse Object ID - unique identifier in database (undefined until saved) */
   objectId?: string;
   /** Client and contact information */
-  client: IClientData;
+  customer: IClientData;
   /** Project scope, title, and management details */
   project: IProjectData;
   /** Financial terms, amounts, and timeline */

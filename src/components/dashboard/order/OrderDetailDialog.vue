@@ -1,4 +1,35 @@
 <script setup lang="ts">
+/**
+ * OrderDetailDialog — Display comprehensive order details in a modal dialog.
+ *
+ * Presents complete order information including:
+ * - **Client Information** — Contact details (name, email, phone, company)
+ * - **Project Details** — Title, description, priority, and status badges
+ * - **Financial Terms** — Amounts, dates, payment schedule
+ * - **File Gallery** — Display uploaded project files with lightbox preview
+ * - **Status Indicators** — Visual badges for priority and project status
+ *
+ * The dialog is opened/closed through the useOrderDetailDialog composable and displays
+ * a 404-style error message if the order is not found. Fully responsive with max-width
+ * constraints and scrollable content area.
+ *
+ * **Features**:
+ * - Responsive layout (max 850px, 95vw on mobile)
+ * - Dynamic color styling for priority and status badges
+ * - Gallery with lightbox image preview capability
+ * - Professional card-based layout with organized sections
+ * - Smooth backdrop blur animation on dialog open
+ *
+ * @component
+ * @example
+ * // Used globally within DashboardLayout - no direct props
+ * // Managed via useOrderDetailDialog composable
+ * // To open: useOrderDetailDialog().openDetailDialog(order)
+ *
+ * @see useOrderDetailDialog - Composable managing dialog state
+ * @see useOrder - Composable for order data queries
+ * @see useDashboard - Provides formatMoney utility function
+ */
 import { useDashboard } from 'src/composables/dashboard/useDashboard';
 import { useOrderDetailDialog } from 'src/composables/dashboard/order/useOrderDetailDialog';
 
@@ -109,13 +140,17 @@ const { formatMoney } = useDashboard();
                   <div class="row items-center q-mb-md">
                     <q-avatar size="44px" color="primary" class="text-white text-weight-bold">
                       {{
-                        order.client?.name?.charAt(0).toUpperCase() ||
-                        order.client?.company?.charAt(0).toUpperCase()
+                        order.customer?.firstName?.charAt(0).toUpperCase() ||
+                        order.customer?.company?.charAt(0).toUpperCase()
                       }}
                     </q-avatar>
                     <div class="q-ml-md">
                       <div class="text-subtitle1 text-weight-bold fk-text-contrast">
-                        {{ order.client?.name || order.client?.company || 'Cliente desconocido' }}
+                        {{
+                          `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}` ||
+                          order.customer?.company ||
+                          'Cliente desconocido'
+                        }}
                       </div>
                     </div>
                   </div>
@@ -123,13 +158,13 @@ const { formatMoney } = useDashboard();
                     <div class="col-6">
                       <div class="text-caption text-grey-6">Teléfono</div>
                       <div class="text-weight-bold fk-text-contrast">
-                        {{ order.client?.phone || 'Sin número registrado' }}
+                        {{ order.customer?.phone || 'Sin número registrado' }}
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="text-caption text-grey-6">Email</div>
                       <div class="text-weight-bold text-primary text-truncate">
-                        {{ order.client?.email || 'Sin email registrado' }}
+                        {{ order.customer?.email || 'Sin email registrado' }}
                       </div>
                     </div>
                   </div>

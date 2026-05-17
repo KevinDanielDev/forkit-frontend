@@ -1,4 +1,37 @@
 <script setup lang="ts">
+/**
+ * ProjectStep — Second step in multi-step order creation dialog.
+ *
+ * Collects project details and manages file uploads:
+ * - **Project Information** — Title, priority, status, description
+ * - **File Upload** — Support for multiple file uploads with image preview
+ * - **Image Gallery** — Real-time preview of uploaded images
+ * - **Form Validation** — Required fields and file type validation
+ * - **Memory Management** — Automatic cleanup of object URLs on unmount
+ * - **Data Binding** — Updates useOrderCreateDialog().projectData reactively
+ *
+ * The component exposes validateForm() method for parent multi-step dialog integration.
+ * Automatically generates object URLs for image files and cleans them up on component
+ * unmount to prevent memory leaks.
+ *
+ * **Included Fields**:
+ * - Project Title (required)
+ * - Priority Level (Low, Medium, High, Urgent)
+ * - Project Status (Pending, In Progress, Completed)
+ * - Description (text area)
+ * - File Uploads (multiple)
+ *
+ * @component
+ * @exposes {Function} validateForm - Validates form and returns Promise<boolean>
+ * @example
+ * // Used in OrderCreateDialog as second step
+ * const projectStepRef = ref<InstanceType<typeof ProjectStep> | null>(null);
+ * // Form validation ensures title and priority are set
+ *
+ * @see OrderCreateDialog - Parent multi-step dialog component
+ * @see useOrderCreateDialog - Manages project data and file state
+ * @see useValidationRules - Provides validation rules
+ */
 import { ref, watch, onUnmounted } from 'vue';
 import { QForm } from 'quasar';
 import { useValidationRules } from 'src/composables/common/useValidationRules';
@@ -11,7 +44,7 @@ const { ...rules } = useValidationRules();
 const projectFormRef = ref<InstanceType<typeof QForm> | null>(null);
 
 /**
- * Función para limpiar URLs de previsualización para evitar fugas de memoria.
+ * Cleanup object URLs for file previews to prevent memory leaks.
  */
 function cleanPreviews() {
   filesPreview.value.forEach((url) => URL.revokeObjectURL(url));
@@ -19,7 +52,7 @@ function cleanPreviews() {
 }
 
 /**
- * Watcher para generar previsualizaciones de imágenes locales (blob)
+ * Watch for file changes and generate image previews from blob URLs.
  */
 watch(
   () => projectData.value.files,
@@ -28,7 +61,7 @@ watch(
 
     if (!newFiles || newFiles.length === 0) return;
 
-    // Generamos nuevas URLs de objeto para los archivos tipo imagen
+    // Generate object URLs only for image files
     filesPreview.value = newFiles
       .filter((file) => file.type.startsWith('image/'))
       .map((file) => URL.createObjectURL(file));
@@ -43,7 +76,7 @@ async function validateForm() {
   return false;
 }
 
-// Limpiar al desmontar el componente
+// Cleanup object URLs on component unmount
 onUnmounted(() => cleanPreviews());
 
 defineExpose({ validateForm });
