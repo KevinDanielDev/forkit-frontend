@@ -14,11 +14,15 @@ import type { IOrder } from 'src/models/interfaces/order/order.interface';
 import type { IFinanceData, IProjectData } from 'src/models/interfaces/order';
 import type { ICustomerData } from 'src/models/interfaces/customer/customer-data.interface';
 
+// Type for step component reference with validateForm method
+interface StepComponent {
+  validateForm(): Promise<boolean>;
+}
+
 // Refs Global
 const step = ref<number>(1);
 const filesPreview = ref<string[]>([]);
 
-// clientData adaptado exactamente a lo que consumen los q-inputs del paso de orden
 const customerData = ref<ICustomerData>({
   firstName: '',
   lastName: '',
@@ -48,7 +52,56 @@ const financeData = ref<IFinanceData>({
 const totalSteps = 3;
 
 /**
- * Composable for managing the multi-step order creation dialog state and navigation.
+ * Multi-step order creation dialog state management and validation.
+ *
+ * Manages the complete order creation workflow including:
+ * - **Multi-Step Navigation**: Navigate through client, project, and finance steps
+ * - **Form Validation**: Validate each step before advancing (using step components' validateForm)
+ * - **Data Aggregation**: Collect customer, project, and finance data across steps
+ * - **File Management**: Handle file uploads and preview management
+ * - **Mutation Handling**: Create order with Vue Query mutation and cache invalidation
+ * - **Responsive Behavior**: Adapt layout for mobile/desktop screens
+ * - **Progress Tracking**: Compute progress percentage for visual indicators
+ *
+ * The composable manages global refs for customer, project, and finance data that are
+ * modified directly by child step components via template refs (clientStepRef, projectStepRef, financeStepRef).
+ * Upon successful validation of all steps, it triggers the createOrderMutation which persists to Parse.
+ *
+ * @returns {Object} Dialog state, computed properties, and control methods
+ * @returns {Ref<number>} .step - Current step number (1, 2, or 3)
+ * @returns {Ref<boolean>} .isDialogOpen - Whether dialog is visible
+ * @returns {Ref<InstanceType>} .clientStepRef - Reference to ClientStep component
+ * @returns {Ref<InstanceType>} .projectStepRef - Reference to ProjectStep component
+ * @returns {Ref<InstanceType>} .financeStepRef - Reference to FinanceStep component
+ * @returns {Ref<ICustomerData>} .customerData - Current customer information
+ * @returns {Ref<IProjectData>} .projectData - Current project information
+ * @returns {Ref<IFinanceData>} .financeData - Current finance information
+ * @returns {Ref<string[]>} .filesPreview - Array of file preview URLs
+ * @returns {Computed<number>} .progress - Completion percentage (0 to 1)
+ * @returns {Computed<boolean>} .isMobile - True if viewport width is less than medium (md)
+ * @returns {Computed<number>} .pendingAmount - Remaining balance (totalAmount - depositAmount)
+ * @returns {Function} .openDialog - Toggle dialog visibility
+ * @returns {Function} .closeDialog - Close dialog and reset state
+ * @returns {Function} .nextStep - Validate current step and advance to next
+ * @returns {Function} .backStep - Return to previous step or close if on step 1
+ * @returns {Object} .createOrderMutation - Vue Query mutation for order creation
+ * @returns {Ref<boolean>} .isPending - True while order is being saved
+ *
+ * @example
+ * // In a Vue component using the multi-step dialog
+ * const {
+ *   step,
+ *   isDialogOpen,
+ *   customerData,
+ *   projectData,
+ *   financeData,
+ *   progress,
+ *   isMobile,
+ *   openDialog,
+ *   nextStep,
+ *   backStep,
+ *   isPending
+ * } = useOrderCreateDialog();
  */
 export function useOrderCreateDialog() {
   const $q = useQuasar();
@@ -114,9 +167,9 @@ export function useOrderCreateDialog() {
 
     const currentRef = stepRefs[step.value as keyof typeof stepRefs];
 
-    if (!currentRef?.value) return;
+    if (!currentRef || !currentRef.value) return;
 
-    const isValid = await currentRef.value.validateForm();
+    const isValid = await (currentRef.value as StepComponent).validateForm();
 
     if (!isValid) return;
 

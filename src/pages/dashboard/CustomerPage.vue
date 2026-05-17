@@ -1,4 +1,35 @@
 <script setup lang="ts">
+/**
+ * CustomerPage — Customer directory and management interface.
+ *
+ * Comprehensive customer management page featuring:
+ * - **Customer Directory** — Searchable table with all customers
+ * - **KPI Metrics** — Overview cards showing customer statistics
+ * - **Customer Creation** — Modal dialog for adding new customers
+ * - **Search & Filter** — Real-time search by customer name
+ * - **Customer Actions** — View, edit, and delete customer records
+ * - **Status Indicators** — Visual customer status badges
+ *
+ * The page displays customer information in a responsive table with:
+ * - Initials avatar (based on first/last name)
+ * - Full name (clickable for details)
+ * - Email and phone contact information
+ * - Company affiliation
+ * - Active status indicator
+ * - Action buttons (edit, delete)
+ *
+ * Integrates with Vue Query for reactive data management and automatic
+ * cache invalidation on customer creation or deletion.
+ *
+ * @component
+ * @example
+ * // Customer navigation accessed from dashboard sidebar
+ * // Displays list of all customers with management capabilities
+ *
+ * @see CustomerCreateDialog - Modal for customer data entry
+ * @see useCustomer - Composable managing customer data and queries
+ * @see KpiCard - Statistics display component
+ */
 import KpiCard from 'src/components/common/KpiCard.vue';
 
 import { useCustomer } from 'src/composables/dashboard/customer/useCustomer';

@@ -267,20 +267,21 @@ The project has comprehensive JSDoc documentation (90%+ coverage) across all cor
 
 **Documentation Coverage by Module:**
 
-| Module | Files | Status | Details |
-|--------|-------|--------|---------|
-| **Services** | 2 | ✅ 100% | Auth, Order services with full method documentation |
-| **Composables** | 7 | ✅ 100% | State management, validation, layout utilities |
-| **Router** | 3 | ✅ 100% | Routes, auth guard, router initialization |
-| **Stores** | 1 | ✅ 100% | Theme state management |
-| **Boot Modules** | 4 | ✅ 100% | Vue Query, Axios, Parse, i18n configuration |
-| **Interfaces** | 8 | ✅ 100% | Order, User, Auth, Layout type definitions |
-| **Components** | 17 | ✅ 100% | Layouts, pages, dialogs, steps, utilities |
-| **Total** | **47** | **✅ ~95%** | Comprehensive documentation |
+| Module           | Files  | Status      | Details                                             |
+| ---------------- | ------ | ----------- | --------------------------------------------------- |
+| **Services**     | 2      | ✅ 100%     | Auth, Order services with full method documentation |
+| **Composables**  | 7      | ✅ 100%     | State management, validation, layout utilities      |
+| **Router**       | 3      | ✅ 100%     | Routes, auth guard, router initialization           |
+| **Stores**       | 1      | ✅ 100%     | Theme state management                              |
+| **Boot Modules** | 4      | ✅ 100%     | Vue Query, Axios, Parse, i18n configuration         |
+| **Interfaces**   | 8      | ✅ 100%     | Order, User, Auth, Layout type definitions          |
+| **Components**   | 17     | ✅ 100%     | Layouts, pages, dialogs, steps, utilities           |
+| **Total**        | **47** | **✅ ~95%** | Comprehensive documentation                         |
 
 ### Quick Navigation by Category
 
 #### 🔧 Infrastructure & Services
+
 - **Authentication** — `src/infrastructure/parse/auth/auth.service.ts`
   - `signIn()` — User login with credentials
   - `signUp()` — New user registration with ACL
@@ -293,6 +294,7 @@ The project has comprehensive JSDoc documentation (90%+ coverage) across all cor
   - `deleteOrder()` — Remove orders by ID
 
 #### 🎣 Composables (Vue Composition API Hooks)
+
 - **Authentication** — `useAuth()` — Sign-in, sign-up, logout mutations
 - **Common Utilities**
   - `useNotify()` — Success/error toast notifications
@@ -304,6 +306,7 @@ The project has comprehensive JSDoc documentation (90%+ coverage) across all cor
 - **Layout** — `useDashboardLayout()` — Navigation, theme switching
 
 #### 🗂️ Configuration & Initialization
+
 - **Router** — `src/router/`
   - `routes.ts` — Route definitions with guards
   - `authGuard.ts` — Authentication middleware
@@ -316,10 +319,12 @@ The project has comprehensive JSDoc documentation (90%+ coverage) across all cor
   - `i18n.ts` — Internationalization setup with type safety
 
 #### 🏪 State Management
+
 - **Pinia Stores** — `src/stores/`
   - `theme-store.ts` — Dark/light theme state
 
 #### 📦 Type Definitions
+
 - **Order** — `IOrder`, `IClientData`, `IProjectData`, `IFinanceData`
 - **User** — `IUser`, `ISignUp`
 - **Layout** — `IMenuOption`, `IMenuGroup`
@@ -327,16 +332,19 @@ The project has comprehensive JSDoc documentation (90%+ coverage) across all cor
 #### 🎨 Vue Components
 
 **Layouts (2)**
+
 - `AuthLayout.vue` — Two-column authentication layout with features showcase
 - `DashboardLayout.vue` — Main dashboard with sidebar, header, navigation
 
 **Pages (7)**
+
 - **Authentication** — `SignInPage.vue`, `SignUpPage.vue`
 - **Dashboard**
   - `DashboardPage.vue` — KPI overview and recent orders
   - `OrderPage.vue`, `ClientPage.vue`, `FinancePage.vue`, `ReportPage.vue` (WIP)
 
 **Dialog Components (6)**
+
 - `OrderCreateDialog.vue` — Multi-step order creation modal
 - `ClientStep.vue` — Step 1: Client information
 - `ProjectStep.vue` — Step 2: Project details with file upload
@@ -344,6 +352,7 @@ The project has comprehensive JSDoc documentation (90%+ coverage) across all cor
 - `OrderStepProgress.vue` — Progress indicator
 
 **Other (4)**
+
 - `App.vue` — Root application component
 - `ErrorNotFound.vue` — 404 error page
 - `WorkInProgress.vue` — Development placeholder component

@@ -2,21 +2,21 @@ import { useQuasar } from 'quasar';
 
 /**
  * Composable for displaying toast notifications to users.
- * 
+ *
  * Provides helper functions to show success and error notifications using Quasar's
  * notification system. Notifications appear in the top-right corner with automatic
  * dismissal and visual feedback.
- * 
+ *
  * @returns {Object} Notification methods
  * @returns {Function} .notifySuccess - Display a success notification
  * @returns {Function} .notifyError - Display an error notification
- * 
+ *
  * @example
  * const { notifySuccess, notifyError } = useNotify();
- * 
+ *
  * // Show success notification
  * notifySuccess('Success', 'Operation completed successfully');
- * 
+ *
  * // Show error notification
  * notifyError('Error', 'An unexpected error occurred');
  */

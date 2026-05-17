@@ -49,13 +49,11 @@ async function createOrder(order: IOrder) {
 
   const newOrder = new Parse.Object('Order');
 
-  // Datos del Cliente
   console.log(order.customer);
   const customer = new Parse.Object('Customer');
   customer.id = order.customer.objectId;
   newOrder.set('customer', customer);
 
-  // Datos del Proyecto
   newOrder.set('projectName', order.project.title);
   newOrder.set('priority', order.project.priority);
   newOrder.set('status', order.project.status);
@@ -90,7 +88,7 @@ async function createOrder(order: IOrder) {
     const response = await newOrder.save();
     return response;
   } catch (error) {
-    console.error('Error al guardar la orden:', error);
+    console.error('Error saving order:', error);
     throw error as Parse.Error;
   }
 }

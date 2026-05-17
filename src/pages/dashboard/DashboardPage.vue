@@ -1,4 +1,38 @@
 <script setup lang="ts">
+/**
+ * DashboardPage — Main dashboard overview with business metrics and recent orders.
+ *
+ * Central dashboard interface displaying:
+ * - **KPI Cards** — Key performance indicators (total orders, pending, in-progress, completed, income, receivable)
+ * - **Orders Table** — Paginated table of all orders with sorting and filtering
+ * - **Multi-Filter Search** — Filter by client name, priority, status, and search text
+ * - **Order Management** — Create new orders, view details, and delete orders
+ * - **Real-time Data** — Vue Query integration for reactive order updates
+ * - **Responsive Layout** — Adapts to mobile and desktop viewports
+ *
+ * Features:
+ * - Currency formatting (Colombian Pesos)
+ * - Priority and status color coding
+ * - Table pagination and sorting
+ * - Order creation dialog with multi-step wizard
+ * - Order detail modal with file gallery
+ * - Drawer for advanced filtering options
+ * - Loading and error states with user feedback
+ *
+ * The page manages comprehensive order workflow from creation through completion,
+ * with real-time financial tracking and status monitoring.
+ *
+ * @component
+ * @example
+ * // Main dashboard view accessed after authentication
+ * // Displays business overview and operational dashboard
+ *
+ * @see DashboardLayout - Parent layout component
+ * @see OrderCreateDialog - Multi-step order creation
+ * @see OrderDetailDialog - Order information display
+ * @see useDashboard - Dashboard state and utilities
+ * @see useOrder - Order queries and mutations
+ */
 import { ref } from 'vue';
 
 import { useOrder } from 'src/composables/dashboard/order/useOrder';

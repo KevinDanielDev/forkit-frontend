@@ -5,7 +5,45 @@ import type { IOrder } from 'src/models/interfaces/order/order.interface';
 import { useCustomer } from './customer/useCustomer';
 
 /**
- * Composable for managing dashboard data, display configurations, and multi-criteria filters.
+ * Dashboard state management composable with filtering, statistics, and table configuration.
+ *
+ * Manages the complete dashboard interface including:
+ * - **KPI Cards**: Real-time statistics (total orders, pending, in-progress, completed, income, receivable)
+ * - **Table Configuration**: Quasar table columns with sorting and formatting
+ * - **Multi-Criteria Filtering**: Filter orders by client name, priority, status, and search text
+ * - **Currency Formatting**: Format monetary values in Colombian Pesos (COP)
+ * - **Customer Data Integration**: Real-time customer list and names for filter dropdowns
+ *
+ * The composable uses Vue Query (useOrder) for reactive server state and manages local UI state
+ * with ref and computed properties. All filtering is responsive and updates statistics in real-time.
+ *
+ * @returns {Object} Dashboard state and methods
+ * @returns {Array<Object>} .cards - Array of KPI card objects with icon, value, label, and color
+ * @returns {Array<QTableColumn>} .columns - Quasar table column definitions for orders table
+ * @returns {Record<string, Object>} .priorityMap - Color mappings for priority levels
+ * @returns {Object} .getOrdersQuery - Vue Query hook for orders data
+ * @returns {Ref<IOrder[]>} .orders - Computed list of all orders
+ * @returns {Ref<string>} .filterInput - Text search filter input
+ * @returns {Ref<string|null>} .selectedClient - Selected client filter
+ * @returns {Ref<string|null>} .selectedPriority - Selected priority filter
+ * @returns {Ref<string|null>} .selectedStatus - Selected status filter
+ * @returns {Computed<string[]>} .customerNameOptions - List of unique customer names for dropdown
+ * @returns {Computed<Object>} .tableFilters - Current filter object with all criteria
+ * @returns {Function} .formatMoney - Currency formatter function (COP)
+ * @returns {Function} .multiCriteriaFilter - Filter function for orders
+ * @returns {Function} .clearAllFilters - Reset all filters to initial state
+ *
+ * @example
+ * // In a Vue component
+ * const {
+ *   cards,
+ *   columns,
+ *   orders,
+ *   filterInput,
+ *   formatMoney,
+ *   multiCriteriaFilter,
+ *   clearAllFilters
+ * } = useDashboard();
  */
 export function useDashboard() {
   const { getOrdersQuery } = useOrder();

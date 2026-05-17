@@ -1,7 +1,26 @@
 <script setup lang="ts">
 /**
- * ClientStep — Dialogo / Step de creación de cliente en Forkit.
- * Estructura de inputs organizada en pares simétricos (de a dos campos).
+ * CustomerCreateDialog — Customer creation and editing dialog component.
+ *
+ * Modal dialog for creating new customers or editing existing ones:
+ * - **Two-Column Layout** — Symmetric input pairs for efficient data entry
+ * - **Form Validation** — Real-time validation using useValidationRules
+ * - **Persistent Dialog** — Prevents accidental dismissal during data entry
+ * - **Smooth Animations** — Slide-up/down transitions for UX
+ * - **Auto-Submit on Success** — Closes after customer is created
+ *
+ * Collects customer information:
+ * - Name (firstName, lastName)
+ * - Contact Details (email, phone, countryCode)
+ * - Company Name
+ *
+ * @component
+ * @example
+ * // Used in CustomerPage dashboard
+ * // Open via: useCreateCustomerDialog().openDialog()
+ *
+ * @see useCreateCustomerDialog - State management for dialog
+ * @see useValidationRules - Form validation rules
  */
 
 import { useValidationRules } from 'src/composables/common/useValidationRules';

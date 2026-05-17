@@ -1,10 +1,10 @@
 /**
  * Represents the data structure for user sign-up registration.
- * 
+ *
  * Contains all required information for registering a new user account in the system.
  * All fields are required during registration. Email must be unique across the system.
  * Password must meet security requirements (minimum 8 characters, uppercase, digits).
- * 
+ *
  * @interface ISignUp
  * @property {string} name - User's first name
  * @property {string} lastName - User's last name

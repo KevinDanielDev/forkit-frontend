@@ -1,4 +1,35 @@
 <script setup lang="ts">
+/**
+ * OrderDetailDialog — Display comprehensive order details in a modal dialog.
+ *
+ * Presents complete order information including:
+ * - **Client Information** — Contact details (name, email, phone, company)
+ * - **Project Details** — Title, description, priority, and status badges
+ * - **Financial Terms** — Amounts, dates, payment schedule
+ * - **File Gallery** — Display uploaded project files with lightbox preview
+ * - **Status Indicators** — Visual badges for priority and project status
+ *
+ * The dialog is opened/closed through the useOrderDetailDialog composable and displays
+ * a 404-style error message if the order is not found. Fully responsive with max-width
+ * constraints and scrollable content area.
+ *
+ * **Features**:
+ * - Responsive layout (max 850px, 95vw on mobile)
+ * - Dynamic color styling for priority and status badges
+ * - Gallery with lightbox image preview capability
+ * - Professional card-based layout with organized sections
+ * - Smooth backdrop blur animation on dialog open
+ *
+ * @component
+ * @example
+ * // Used globally within DashboardLayout - no direct props
+ * // Managed via useOrderDetailDialog composable
+ * // To open: useOrderDetailDialog().openDetailDialog(order)
+ *
+ * @see useOrderDetailDialog - Composable managing dialog state
+ * @see useOrder - Composable for order data queries
+ * @see useDashboard - Provides formatMoney utility function
+ */
 import { useDashboard } from 'src/composables/dashboard/useDashboard';
 import { useOrderDetailDialog } from 'src/composables/dashboard/order/useOrderDetailDialog';
 

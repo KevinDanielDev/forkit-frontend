@@ -39,14 +39,16 @@ Make sure your PR meets the following requirements:
 <!-- Describe the testing performed -->
 
 ### Manual testing performed:
+
 - [ ] Tested in development
 - [ ] Tested in multiple browsers
 - [ ] Tested on mobile devices
 
 ### Steps to verify:
-1. 
-2. 
-3. 
+
+1.
+2.
+3.
 
 ## 📸 Screenshots/Videos (if applicable)
 
@@ -60,8 +62,8 @@ Make sure your PR meets the following requirements:
 
 <!-- Additional information relevant to reviewers -->
 
-- 
-- 
+-
+-
 
 ## ✨ Highlights
 
@@ -77,4 +79,4 @@ Make sure your PR meets the following requirements:
 
 **Thank you for contributing to ForkIt Frontend! 🚀**
 
-*Please make sure your PR is specific, small, and focused on solving a single problem.*
+_Please make sure your PR is specific, small, and focused on solving a single problem._

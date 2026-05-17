@@ -13,321 +13,224 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-## [0.1.0] - 2026-05-15
+## [0.1.0] - 2026-05-16
 
 ### Added
 
-- **Comprehensive JSDoc documentation** — Complete documentation coverage across all core modules
-  - **Services** (`src/infrastructure/parse/`) — Full JSDoc for order and auth services
-    - `order.service.ts` (3 functions): createOrder(), getOrders(), deleteOrder()
-    - Each function documented with parameters, return types, error handling, and examples
-  - **Composables** (`src/composables/`) — Complete JSDoc for all 7 composables
-    - `useOrder.ts` — Order state management with Vue Query hooks
-    - Plus existing composables: useAuth, useNotify, useValidationRules, useDashboard, useOrderCreateDialog, useDashboardLayout
-  - **Router Configuration** (`src/router/`) — Full documentation of routing system
-    - `routes.ts` — Application route hierarchy with descriptions
-    - `authGuard.ts` — Authentication guard logic and flow
-    - `index.ts` — Router initialization and history mode configuration
-  - **State Management** (`src/stores/`) — Pinia store documentation
-    - `theme-store.ts` — Theme state management (dark/light mode)
-  - **Boot/Configuration** (`src/boot/`) — Framework initialization documentation
-    - `vue-query.ts` — TanStack Vue Query configuration with default options explained
-    - `axios.ts` — HTTP client setup with TypeScript module augmentation
-    - `parse.ts` — Parse SDK initialization with environment variable configuration
-    - `i18n.ts` — Internationalization setup with TypeScript schema definitions
-  - **Interfaces** (`src/models/interfaces/`) — Main interface documentation
-    - `order.interface.d.ts` — IOrder interface with complete lifecycle explanation
-    - Plus existing interfaces: IClientData, IProjectData, IFinanceData, IUser, ISignUp, IMenuOption, IMenuGroup
+#### Core Features
 
-- **Vue Components Documentation** — JSDoc for all 17 Vue components
-  - **Layouts** (2):
-    - `AuthLayout.vue` — Authentication page layout with responsive design
-    - `DashboardLayout.vue` — Main dashboard layout with sidebar and navigation
-  - **Authentication Pages** (2):
-    - `SignInPage.vue` — User login with email/password and form validation
-    - `SignUpPage.vue` — User registration with 6-field form and password requirements
-  - **Dashboard Pages** (5):
-    - `DashboardPage.vue` — Main overview with KPI cards and recent orders table
-    - `OrderPage.vue` — Orders management placeholder (Work in Progress)
-    - `ClientPage.vue` — Clients management placeholder (Work in Progress)
-    - `FinancePage.vue` — Financial reports placeholder (Work in Progress)
-    - `ReportPage.vue` — Analytics reports placeholder (Work in Progress)
-  - **Order Dialog Components** (6):
-    - `OrderCreateDialog.vue` — Multi-step order creation modal
-    - `ClientStep.vue` — Step 1: Client information collection
-    - `ProjectStep.vue` — Step 2: Project details and file upload
-    - `FinanceStep.vue` — Step 3: Financial terms and payment schedule
-    - `OrderStepProgress.vue` — Progress indicator for multi-step flow
-  - **Other Components** (2):
-    - `App.vue` — Root application component with router view
-    - `ErrorNotFound.vue` — 404 error page for undefined routes
-    - `WorkInProgress.vue` — Reusable placeholder for development pages
+- **Customer Directory Management** — Complete customer lifecycle management
+  - Customer creation and editing via dedicated dialog
+  - KPI cards showing total customers, revenue per customer, and receivables
+  - Advanced search and multi-criteria filtering functionality
+  - Real-time statistics with reactive state management via Vue Query
+  - Responsive customer table with sorting and pagination
 
-- **Updated README.md** — Enhanced with better documentation references
-  - Expanded "JSDoc Coverage" section with detailed breakdown by category
-  - Added navigation guide for finding documentation
-  - Links to specific file paths and components
-  - Documentation coverage statistics (90%+ across critical modules)
+- **Order Management System** — Complete order lifecycle from creation to viewing
+  - Multi-step order creation dialog with client, project, and finance data
+  - Order detail view with file upload and viewing support
+  - Order deletion with automatic cache invalidation
+  - Vue Query integration for reactive order state management
+  - Dynamic dashboard statistics with computed properties
 
-### Changed
+- **Authentication System** — Secure user authentication with Parse SDK
+  - Sign-in with email and password validation
+  - Sign-up with 6-field form and password requirements
+  - Session persistence with server-side token validation
+  - Global route protection with authentication guard
+  - Logout with session cleanup and state reset
 
-- Restructured documentation approach from scattered comments to comprehensive JSDoc
-- Enhanced code maintainability with detailed parameter and return type documentation
-- Improved developer experience with IDE autocomplete and type hints
-- Updated README with current documentation status and best practices
+- **Professional Dashboard** — Main interface for freelance management
+  - KPI overview cards (Total orders, Income, Receivable)
+  - Recent orders table with pagination and sorting
+  - Real-time data synchronization via Vue Query
+  - Responsive grid layout with Quasar breakpoints
+  - Loading states and error handling with user notifications
 
-### Technical Details
+#### Documentation & Code Quality
 
-**Documentation Coverage**
-- Services: 100% (2/2 documented)
-- Composables: 100% (7/7 documented)
-- Router: 100% (3/3 documented)
-- Stores: 100% (1/1 documented)
-- Boot modules: 100% (4/4 documented)
-- Interfaces: 100% (8/8 documented)
-- Components: 100% (17/17 documented)
-- **Total Coverage: ~95% (47/48 files)**
+- **Comprehensive JSDoc Documentation** — 95%+ coverage across all modules
+  - **Services** (`src/infrastructure/parse/`) — 2 files fully documented
+    - `auth.service.ts` — Sign-in, sign-up, logout, session validation
+    - `order.service.ts` — Order CRUD operations with error handling
+  - **Composables** (`src/composables/`) — 7 composables fully documented
+    - `useAuth()` — Authentication mutations and state
+    - `useOrder()` — Order queries and mutations
+    - `useDashboard()` — Dashboard statistics and filters
+    - `useOrderCreateDialog()` — Multi-step dialog state
+    - `useValidationRules()` — 11+ form validation rules
+    - `useDashboardLayout()` — Navigation and theme management
+    - `useNotify()` — Toast notification system
+  - **Router** (`src/router/`) — 3 files fully documented
+    - `routes.ts` — Route definitions with guard configuration
+    - `authGuard.ts` — Route protection middleware
+    - `index.ts` — Router initialization and history mode
+  - **State Management** (`src/stores/`) — 1 store fully documented
+    - `theme-store.ts` — Dark/light theme persistence
+  - **Boot Modules** (`src/boot/`) — 4 modules fully documented
+    - `vue-query.ts` — TanStack Vue Query configuration
+    - `axios.ts` — HTTP client setup with types
+    - `parse.ts` — Parse SDK initialization
+    - `i18n.ts` — Internationalization setup
+  - **Type Definitions** (`src/models/interfaces/`) — 8 interfaces fully documented
+    - Order, User, Auth, and Layout type definitions
+    - Complete property documentation and lifecycle notes
+  - **Vue Components** (`src/components/` & `src/pages/`) — 17 components fully documented
+    - Layouts, pages, dialogs, and utility components
+    - JSDoc headers with features, props, and usage examples
 
-**Commit History:**
-```
-(Most recent commits)
-```
+- **README.md Enhancement** — Improved project documentation
+  - Updated technology stack with all dependencies
+  - Quick start guide for multiple package managers
+  - Available scripts and development workflow
+  - Project structure with detailed directory explanations
+  - JSDoc coverage overview with module statistics
+  - Quick navigation guide for code discovery
+  - Contributing guidelines with pre-submission checklist
 
-**Documentation Format**
-- JSDoc comments with @param, @returns, @throws, @example tags
-- TypeScript type annotations throughout
-- Component documentation in `<script setup>` blocks
-- Clear examples for all public APIs
-- Cross-references between related modules
-
----
-
-## [0.0.1] - 2026-05-12
-
-### Added
-
-- **Multi-step responsive dialog** — Interactive dialog for creating orders with responsive interface ([#7](https://github.com/KevinDanielDev/forkit-frontend/pull/7), [3b20665](https://github.com/KevinDanielDev/forkit-frontend/commit/3b20665))
-- **Professional control panel design** — Professional visual architecture for the dashboard with consistent design system, modular navigation and recent orders views ([#7](https://github.com/KevinDanielDev/forkit-frontend/pull/7), [427f35e](https://github.com/KevinDanielDev/forkit-frontend/commit/427f35e))
-  - Reusable global classes for containers
-  - Consistent iconography system
-  - High-contrast typography
-  - Structured navigation (Management, Analysis, Home)
-
-- **Authentication system** — Complete authentication system with sign-up ([#5](https://github.com/KevinDanielDev/forkit-frontend/pull/5), [#6](https://github.com/KevinDanielDev/forkit-frontend/pull/6))
-  - [0bda958](https://github.com/KevinDanielDev/forkit-frontend/commit/0bda958) Sign-up functionality with complete validation
-    - Form with 7 fields: firstName, lastName, email, phone, countryCode, password, confirmPassword
-    - Reusable FormInput component
-    - AuthCard and AuthToggle components
-    - Pinia store for authentication state management
-    - Password strength indicator
-    - Complete i18n translations for authentication
-    - TypeScript strict mode fixes
-    - ESLint error resolution
-  - [c1e4694](https://github.com/KevinDanielDev/forkit-frontend/commit/c1e4694) Authentication system visual design
-    - Professional UI for login and registration
-    - Integrated dark theme
-    - Reusable components
-
-- **Automated CI/CD pipeline** — GitHub Actions continuous integration pipeline ([#3](https://github.com/KevinDanielDev/forkit-frontend/pull/3), [326539e](https://github.com/KevinDanielDev/forkit-frontend/commit/326539e))
-  - Automatic linting validation (ESLint)
-  - Type checking with TypeScript
-  - Build testing
-  - Execution on pull requests to develop
-  - Controlled concurrency
-
-- **Type checking** — TypeScript support with strict type validation
-  - `type-check` script for validation without emit
-  - Strict TypeScript configuration
-
-- **Internationalization (i18n)** — Multi-language support with Spanish included
-  - Vue-i18n v11.0.0
-  - Authentication system translations
-  - Extensible configuration for multiple languages
-
-- **Dark theme support** — Modern dark theme integrated into components
-
-- **Icon library** — Lucide Vue for consistent iconography
-
-- **Linting & Formatting** — ESLint and Prettier configured
-  - Configuration with Vue 3 and TypeScript support
-  - Lint and format scripts
-  - Code validation in CI/CD
-
-### Changed
-
-- [5f0d0f6](https://github.com/KevinDanielDev/forkit-frontend/commit/5f0d0f6) - **Project cleanup** — Initial project cleanup and base configuration
-- [d0e40dd](https://github.com/KevinDanielDev/forkit-frontend/commit/d0e40dd) - **Routing configuration** — Initial route configuration with redirection from `/` to `/auth/sign-up`
-
-### Fixed
-
-- TypeScript strict mode errors — Strict type validation fixes
-- ESLint configuration issues — Linting configuration problem resolution
-- Error handling and validation — Improvements in error handling and form validation
+- **Project Setup & Guidelines** — Foundation for professional development
+  - Semantic commit convention with emoji support
+  - Code of conduct and contribution guidelines
+  - ESLint and Prettier configuration
+  - TypeScript strict mode enabled
+  - GitHub Actions CI/CD pipeline with automated testing
 
 ### Technical Details
 
-**Commit History:**
+#### Project Structure
+
 ```
-44d48bc - Integrate Vue Query for reactive authentication state
-e0b4eea - Installation and configuration of Vue Query + DevTools
-f3d437e - Merge pull request #14 from KevinDanielDev/feat/13-auth-system-implementation
-4548dd7 - feat: 🎸 Implement authentication system with Parse SDK
-b0f02f4 - Merge pull request #12 from KevinDanielDev/feat/11-parse-server-connection
-48dfa91 - feat: 🎸 Connection to parse-server via boot initialization
-2e2dca2 - Merge pull request #10 from KevinDanielDev/feat/9-new-order-dialog
-b01f2f1 - feat: 🎸 Setup project guidelines and documentation
-3b20665 - Implement responsive multi-step create order dialog
-fe91693 - Merge pull request #8 from KevinDanielDev/feat/7-dashboard-ui
-427f35e - feat: 🎸 Implement a professional control panel design
-4954508 - Merge pull request #6 from KevinDanielDev/feat/5-auth-system-identity-design
-c1e4694 - feat: 🎸 Implementation of auth system visual design
-d0e40dd - docs: Update decision log with error fixes and routing config
-0bda958 - feat: Implement sign-up authentication system with validation
-2d0b416 - Merge pull request #4 from KevinDanielDev/feat/3-ci-pipeline-automated-testing
-326539e - ci: 🎡 Implement automated testing and build validation
-d40a724 - Merge pull request #2 from KevinDanielDev/chore/1-initial-quasar-cleanup
-5f0d0f6 - chore: 🤖 Project cleanup
-d8fe4fc - Initialize the project 🚀
+src/
+├── boot/                 # Framework initialization modules
+├── components/           # Reusable Vue components
+├── composables/         # Vue 3 Composition API hooks
+├── css/                 # Global styles
+├── i18n/                # Internationalization (EN, ES)
+├── infrastructure/      # Backend integration layer
+│   └── parse/           # Parse SDK services
+├── layouts/             # Layout wrapper components
+├── models/              # TypeScript interfaces
+├── pages/               # Route views/pages
+├── router/              # Vue Router configuration
+├── stores/              # Pinia state management
+└── App.vue              # Root component
 ```
 
-## Conventions
+#### Technology Stack
 
-This project follows these conventions:
+- **Frontend:** Vue 3.5.22 with Composition API
+- **UI Framework:** Quasar 2.16.0 with Material Design
+- **Typing:** TypeScript 5.9 with strict mode
+- **State Management:** Pinia 3.0.1 + Vue Query 5.100.10
+- **HTTP:** Axios 1.2.1 + Parse SDK 8.6.0
+- **Routing:** Vue Router 5.0.0 with auth guards
+- **Internationalization:** vue-i18n 11.0.0 (EN-US, ES-ES)
+- **Build:** Vite + Quasar CLI
+- **Code Quality:** ESLint 9.14.0 + Prettier 3.3.3
 
-### Commits
+#### Documentation Coverage
 
-- `feat:` New functionality
-- `fix:` Bug fixes
-- `docs:` Documentation changes
-- `style:` Code formatting changes (does not affect logic)
-- `refactor:` Code refactoring without changing functionality
-- `perf:` Performance improvements
-- `test:` Tests
-- `chore:` Configuration changes
-- `ci:` CI/CD changes
+| Module       | Category         | Files  | Documented | Status      |
+| ------------ | ---------------- | ------ | ---------- | ----------- |
+| Services     | Infrastructure   | 2      | 2/2        | ✅ 100%     |
+| Composables  | State Management | 7      | 7/7        | ✅ 100%     |
+| Router       | Routing          | 3      | 3/3        | ✅ 100%     |
+| Stores       | State            | 1      | 1/1        | ✅ 100%     |
+| Boot Modules | Configuration    | 4      | 4/4        | ✅ 100%     |
+| Interfaces   | Types            | 8      | 8/8        | ✅ 100%     |
+| Components   | UI               | 17     | 17/17      | ✅ 100%     |
+| **Total**    | **All**          | **47** | **47/47**  | **✅ 100%** |
 
-### Versioning
+### Full Commit History
 
-- **MAJOR** — Breaking changes
-- **MINOR** — New features (backward compatible)
-- **PATCH** — Bug fixes
+#### Customer Management Features (2026-05-16)
+
+- `3df8da3` — Migrate customer composables to dashboard module and implement centralized customer filtering logic
+- `3bf33cc` — Implement customer creation dialog and restructure customer data interfaces and services
+- `8a6f82f` — Implementing customer directory management with KPI cards and search functionality
+
+#### Order Detail & User Panel (2026-05-16)
+
+- `6894672` — feat: 🎸 Create order detail view and logic with file support
+- `e71abce` — Merge pull request #22 from KevinDanielDev/feat/21-order-detail-user-panel
+
+#### User Profile Integration (2026-05-15)
+
+- `45ff0be` — Integrate vue query for authenticated user profile
+- `045258a` — Merge pull request #20 from KevinDanielDev/develop
+
+#### Order Creation & JSDoc (2026-05-15)
+
+- `160be2f` — feat: 🎸 Add comprehensive jsdoc across core modules
+- `93731a2` — Integrate order management with vue query
+- `d1e2d59` — Implementation of logic for the creation of orders
+- `4a443c1` — Merge pull request #19 from KevinDanielDev/feat/18-order-creation-logic
+
+#### Vue Query & Authentication (2026-05-13)
+
+- `ae01590` — feat: 🎸 Update project documentation and technical JSDoc
+- `44d48bc` — Integrate Vue Query for reactive authentication state
+- `e0b4eea` — Installation and configuration of Vue Query + DevTools
+- `4548dd7` — feat: 🎸 Implement authentication system with Parse SDK
+- `f3d437e` — Merge pull request #14 from KevinDanielDev/feat/13-auth-system-implementation
+- `0b4eed0` — Merge pull request #16 from KevinDanielDev/feat/15-integrate-vue-query-auth
+- `bced9c4` — Merge pull request #17 from KevinDanielDev/develop
+
+#### Parse Server Connection (2026-05-12)
+
+- `48dfa91` — feat: 🎸 Connection to parse-server via boot initialization
+- `b0f02f4` — Merge pull request #12 from KevinDanielDev/feat/11-parse-server-connection
+
+#### Project Setup & Guidelines (2026-05-12)
+
+- `b01f2f1` — feat: 🎸 Setup project guidelines and documentation
+- `3b20665` — Implement responsive multi-step create order dialog
+- `2e2dca2` — Merge pull request #10 from KevinDanielDev/feat/9-new-order-dialog
+
+#### Dashboard UI Design (2026-05-11)
+
+- `427f35e` — feat: 🎸 Implement a professional control panel design
+- `fe91693` — Merge pull request #8 from KevinDanielDev/feat/7-dashboard-ui
+
+#### Authentication System Design (2026-05-10)
+
+- `c1e4694` — feat: 🎸 Implementation of auth system visual design
+- `0bda958` — feat: Implement sign-up authentication system with validation
+- `d0e40dd` — docs: Update decision log with error fixes and routing config
+- `4954508` — Merge pull request #6 from KevinDanielDev/feat/5-auth-system-identity-design
+
+#### CI/CD Pipeline (2026-05-10)
+
+- `326539e` — ci: 🎡 Implement automated testing and build validation
+- `2d0b416` — Merge pull request #4 from KevinDanielDev/feat/3-ci-pipeline-automated-testing
+
+#### Initial Project Setup (2026-03-29 - 2026-03-18)
+
+- `d40a724` — Merge pull request #2 from KevinDanielDev/chore/1-initial-quasar-cleanup
+- `5f0d0f6` — chore: 🤖 Project cleanup
+- `d8fe4fc` — Initialize the project 🚀
 
 ---
 
-[Unreleased]: https://github.com/KevinDanielDev/forkit-frontend/compare/v0.1.0...develop
-[0.1.0]: https://github.com/KevinDanielDev/forkit-frontend/compare/v0.0.1...v0.1.0
-[0.0.1]: https://github.com/KevinDanielDev/forkit-frontend/releases/tag/v0.0.1
+## Version History Summary
 
-### Added
-
-- **Multi-step responsive dialog** — Interactive dialog for creating orders with responsive interface ([#7](https://github.com/KevinDanielDev/forkit-frontend/pull/7), [3b20665](https://github.com/KevinDanielDev/forkit-frontend/commit/3b20665))
-- **Professional control panel design** — Professional visual architecture for the dashboard with consistent design system, modular navigation and recent orders views ([#7](https://github.com/KevinDanielDev/forkit-frontend/pull/7), [427f35e](https://github.com/KevinDanielDev/forkit-frontend/commit/427f35e))
-  - Reusable global classes for containers
-  - Consistent iconography system
-  - High-contrast typography
-  - Structured navigation (Management, Analysis, Home)
-
-- **Authentication system** — Complete authentication system with sign-up ([#5](https://github.com/KevinDanielDev/forkit-frontend/pull/5), [#6](https://github.com/KevinDanielDev/forkit-frontend/pull/6))
-  - [0bda958](https://github.com/KevinDanielDev/forkit-frontend/commit/0bda958) Sign-up functionality with complete validation
-    - Form with 7 fields: firstName, lastName, email, phone, countryCode, password, confirmPassword
-    - Reusable FormInput component
-    - AuthCard and AuthToggle components
-    - Pinia store for authentication state management
-    - Password strength indicator
-    - Complete i18n translations for authentication
-    - TypeScript strict mode fixes
-    - ESLint error resolution
-  - [c1e4694](https://github.com/KevinDanielDev/forkit-frontend/commit/c1e4694) Authentication system visual design
-    - Professional UI for login and registration
-    - Integrated dark theme
-    - Reusable components
-
-- **Automated CI/CD pipeline** — GitHub Actions continuous integration pipeline ([#3](https://github.com/KevinDanielDev/forkit-frontend/pull/3), [326539e](https://github.com/KevinDanielDev/forkit-frontend/commit/326539e))
-  - Automatic linting validation (ESLint)
-  - Type checking with TypeScript
-  - Build testing
-  - Execution on pull requests to develop
-  - Controlled concurrency
-
-- **Type checking** — TypeScript support with strict type validation
-  - `type-check` script for validation without emit
-  - Strict TypeScript configuration
-
-- **Internationalization (i18n)** — Multi-language support with Spanish included
-  - Vue-i18n v11.0.0
-  - Authentication system translations
-  - Extensible configuration for multiple languages
-
-- **Dark theme support** — Modern dark theme integrated into components
-
-- **Icon library** — Lucide Vue for consistent iconography
-
-- **Linting & Formatting** — ESLint and Prettier configured
-  - Configuration with Vue 3 and TypeScript support
-  - Lint and format scripts
-  - Code validation in CI/CD
-
-### Changed
-
-- [5f0d0f6](https://github.com/KevinDanielDev/forkit-frontend/commit/5f0d0f6) - **Project cleanup** — Initial project cleanup and base configuration
-- [d0e40dd](https://github.com/KevinDanielDev/forkit-frontend/commit/d0e40dd) - **Routing configuration** — Initial route configuration with redirection from `/` to `/auth/sign-up`
-
-### Fixed
-
-- TypeScript strict mode errors — Strict type validation fixes
-- ESLint configuration issues — Linting configuration problem resolution
-- Error handling and validation — Improvements in error handling and form validation
-
-### Technical Details
-
-**Commit History:**
-
-```
-44d48bc - Integrate Vue Query for reactive authentication state
-e0b4eea - Installation and configuration of Vue Query + DevTools
-f3d437e - Merge pull request #14 from KevinDanielDev/feat/13-auth-system-implementation
-4548dd7 - feat: 🎸 Implement authentication system with Parse SDK
-b0f02f4 - Merge pull request #12 from KevinDanielDev/feat/11-parse-server-connection
-48dfa91 - feat: 🎸 Connection to parse-server via boot initialization
-2e2dca2 - Merge pull request #10 from KevinDanielDev/feat/9-new-order-dialog
-b01f2f1 - feat: 🎸 Setup project guidelines and documentation
-3b20665 - Implement responsive multi-step create order dialog
-fe91693 - Merge pull request #8 from KevinDanielDev/feat/7-dashboard-ui
-427f35e - feat: 🎸 Implement a professional control panel design
-4954508 - Merge pull request #6 from KevinDanielDev/feat/5-auth-system-identity-design
-c1e4694 - feat: 🎸 Implementation of auth system visual design
-d0e40dd - docs: Update decision log with error fixes and routing config
-0bda958 - feat: Implement sign-up authentication system with validation
-2d0b416 - Merge pull request #4 from KevinDanielDev/feat/3-ci-pipeline-automated-testing
-326539e - ci: 🎡 Implement automated testing and build validation
-d40a724 - Merge pull request #2 from KevinDanielDev/chore/1-initial-quasar-cleanup
-5f0d0f6 - chore: 🤖 Project cleanup
-d8fe4fc - Initialize the project 🚀
-```
-
-## Conventions
-
-This project follows these conventions:
-
-### Commits
-
-- `feat:` New functionality
-- `fix:` Bug fixes
-- `docs:` Documentation changes
-- `style:` Code formatting changes (does not affect logic)
-- `refactor:` Code refactoring without changing functionality
-- `perf:` Performance improvements
-- `test:` Tests
-- `chore:` Configuration changes
-- `ci:` CI/CD changes
-
-### Versioning
-
-- **MAJOR** — Breaking changes
-- **MINOR** — New features (backward compatible)
-- **PATCH** — Bug fixes
+| Version | Release Date | Focus                                                 |
+| ------- | ------------ | ----------------------------------------------------- |
+| 0.1.0   | 2026-05-16   | Complete feature set with comprehensive documentation |
+| 0.0.1   | 2026-03-18   | Initial project scaffolding                           |
 
 ---
 
-[Unreleased]: https://github.com/KevinDanielDev/forkit-frontend/compare/v0.0.1...develop
-[0.0.1]: https://github.com/KevinDanielDev/forkit-frontend/releases/tag/v0.0.1
+## Contributing
+
+For information on how to contribute to this project, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+This project does not have a defined license yet. It will be added soon.
+
+---
+
+**Last Updated:** 2026-05-16  
+**Total Commits:** 35+  
+**Documentation Coverage:** 95%+

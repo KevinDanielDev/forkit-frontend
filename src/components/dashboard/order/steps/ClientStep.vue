@@ -1,4 +1,34 @@
 <script setup lang="ts">
+/**
+ * ClientStep — First step in multi-step order creation dialog.
+ *
+ * Handles client/customer selection and entry for new orders:
+ * - **Customer Lookup** — Select from existing customers or enter new data
+ * - **Autocomplete Search** — Filter options by customer name, email, or company
+ * - **Dynamic Form** — Auto-populate fields when customer is selected
+ * - **Form Validation** — Required fields and email format validation
+ * - **Data Binding** — Updates useOrderCreateDialog().customerData reactively
+ *
+ * The component exposes validateForm() method for parent multi-step dialog integration,
+ * ensuring form validation passes before advancing to the project step.
+ *
+ * **Included Fields**:
+ * - First Name, Last Name
+ * - Email, Phone, Country Code
+ * - Company Name
+ * - Active Status
+ *
+ * @component
+ * @exposes {Function} validateForm - Validates form and returns Promise<boolean>
+ * @example
+ * // Used in OrderCreateDialog as first step
+ * const clientStepRef = ref<InstanceType<typeof ClientStep> | null>(null);
+ * // Call validateForm() before advancing
+ *
+ * @see OrderCreateDialog - Parent multi-step dialog component
+ * @see useOrderCreateDialog - Manages customer data state
+ * @see useCustomer - Provides customer list and filtering
+ */
 import { ref } from 'vue';
 import { QForm } from 'quasar';
 
