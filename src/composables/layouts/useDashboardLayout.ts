@@ -5,26 +5,26 @@ import type { IMenuGroup } from 'src/models/interfaces/layout/options-drawer.int
 
 /**
  * Composable for managing dashboard layout state and theme switching.
- * 
+ *
  * Manages the dashboard sidebar drawer, theme toggling (light/dark mode),
  * and navigation menu structure. Integrates with Pinia theme store and Quasar's
  * dark mode system to provide persistent theme preferences.
- * 
+ *
  * @returns {Object} Layout state, menu configuration, and control methods
  * @returns {Ref<boolean>} .leftDrawerOpen - Left sidebar visibility state
  * @returns {Function} .toggleTheme - Toggle between dark and light theme
  * @returns {Function} .toggleLeftDrawer - Toggle left sidebar visibility
  * @returns {Array<IMenuGroup>} .menuGroups - Navigation menu structure with grouped items
- * 
+ *
  * @example
  * const { leftDrawerOpen, toggleTheme, toggleLeftDrawer, menuGroups } = useDashboardLayout();
- * 
+ *
  * // Toggle sidebar
  * toggleLeftDrawer();
- * 
+ *
  * // Switch theme
  * toggleTheme();
- * 
+ *
  * // Iterate menu groups
  * menuGroups.forEach(group => {
  *   console.log(group.title); // "Inicio", "Gestión", etc.

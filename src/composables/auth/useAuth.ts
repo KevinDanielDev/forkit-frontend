@@ -10,25 +10,25 @@ import type { ISignUp } from 'src/models/interfaces/auth/sign-up.interface';
 
 /**
  * Composable for managing user authentication operations with Vue Query.
- * 
+ *
  * Handles sign-in, sign-up, and logout mutations with integrated error handling,
  * notifications, and automatic navigation. Manages authentication state through
  * TanStack Vue Query for reactive state management and caching.
- * 
+ *
  * @returns {Object} Authentication mutations and state
  * @returns {UseMutationReturnType} .signInMutation - Sign-in mutation (requires {email: string, password: string})
  * @returns {UseMutationReturnType} .signUpMutation - Sign-up mutation (requires ISignUp object)
  * @returns {UseMutationReturnType} .logoutMutation - Logout mutation (no parameters required)
- * 
+ *
  * @example
  * const { signInMutation, signUpMutation, logoutMutation } = useAuth();
- * 
+ *
  * // Sign in
  * await signInMutation.mutate({
  *   email: 'user@example.com',
  *   password: 'password123'
  * });
- * 
+ *
  * // Sign up
  * await signUpMutation.mutate({
  *   name: 'John',

@@ -1,40 +1,59 @@
-import { computed } from 'vue';
-
+import { computed, ref } from 'vue';
 import type { QTableColumn } from 'quasar';
-
 import { useOrder } from './order/useOrder';
-
 import type { IOrder } from 'src/models/interfaces/order/order.interface';
+import { useCustomer } from './customer/useCustomer';
 
 /**
- * Composable for managing dashboard data and display configuration.
+ * Dashboard state management composable with filtering, statistics, and table configuration.
  *
- * Provides dashboard statistics cards, table columns configuration, reactive order data from Vue Query,
- * and formatting utilities. Integrates with Vue Query for data fetching and caching.
+ * Manages the complete dashboard interface including:
+ * - **KPI Cards**: Real-time statistics (total orders, pending, in-progress, completed, income, receivable)
+ * - **Table Configuration**: Quasar table columns with sorting and formatting
+ * - **Multi-Criteria Filtering**: Filter orders by client name, priority, status, and search text
+ * - **Currency Formatting**: Format monetary values in Colombian Pesos (COP)
+ * - **Customer Data Integration**: Real-time customer list and names for filter dropdowns
  *
- * @returns {Object} Dashboard data and utilities
- * @returns {Array<Object>} .cards - Array of statistic cards with icon, value, label, and color
- * @returns {Array<QTableColumn>} .columns - Quasar table column definitions for orders
- * @returns {ComputedRef<Array>} .orders - Reactive array of orders from Vue Query
- * @returns {Function} .formatMoney - Utility function to format numbers as currency strings
- * @returns {Object} .statusMap - Map of order statuses to color and background styling
- * @returns {Object} .getOrderQuery - Vue Query object with loading, error, and data states
+ * The composable uses Vue Query (useOrder) for reactive server state and manages local UI state
+ * with ref and computed properties. All filtering is responsive and updates statistics in real-time.
+ *
+ * @returns {Object} Dashboard state and methods
+ * @returns {Array<Object>} .cards - Array of KPI card objects with icon, value, label, and color
+ * @returns {Array<QTableColumn>} .columns - Quasar table column definitions for orders table
+ * @returns {Record<string, Object>} .priorityMap - Color mappings for priority levels
+ * @returns {Object} .getOrdersQuery - Vue Query hook for orders data
+ * @returns {Ref<IOrder[]>} .orders - Computed list of all orders
+ * @returns {Ref<string>} .filterInput - Text search filter input
+ * @returns {Ref<string|null>} .selectedClient - Selected client filter
+ * @returns {Ref<string|null>} .selectedPriority - Selected priority filter
+ * @returns {Ref<string|null>} .selectedStatus - Selected status filter
+ * @returns {Computed<string[]>} .customerNameOptions - List of unique customer names for dropdown
+ * @returns {Computed<Object>} .tableFilters - Current filter object with all criteria
+ * @returns {Function} .formatMoney - Currency formatter function (COP)
+ * @returns {Function} .multiCriteriaFilter - Filter function for orders
+ * @returns {Function} .clearAllFilters - Reset all filters to initial state
  *
  * @example
- * const { cards, columns, orders, formatMoney, statusMap, getOrderQuery } = useDashboard();
- *
- * // Access orders reactively
- * const allOrders = orders.value;
- *
- * // Format currency
- * const formatted = formatMoney(1500); // Returns: "$1,500.00"
- *
- * // Check loading state
- * if (getOrderQuery.isLoading.value) { ... }
+ * // In a Vue component
+ * const {
+ *   cards,
+ *   columns,
+ *   orders,
+ *   filterInput,
+ *   formatMoney,
+ *   multiCriteriaFilter,
+ *   clearAllFilters
+ * } = useDashboard();
  */
 export function useDashboard() {
   const { getOrdersQuery } = useOrder();
   const { data } = getOrdersQuery;
+  const { customers } = useCustomer();
+
+  const filterInput = ref<string>('');
+  const selectedClient = ref<string | null>(null);
+  const selectedPriority = ref<string | null>(null);
+  const selectedStatus = ref<string | null>(null);
 
   const orders = computed(() => {
     if (!data.value) return [];
@@ -49,8 +68,38 @@ export function useDashboard() {
     }).format(v);
   };
 
+  const customerNameOptions = computed(() => {
+    const names = customers.value
+      .map((row) => {
+        const firstName = row.firstName || '';
+        const lastName = row.lastName || '';
+        return `${firstName} ${lastName}`.trim();
+      })
+      .filter(Boolean);
+
+    return [...new Set(names)];
+  });
+
+  const tableFilters = computed(() => ({
+    text: filterInput.value,
+    client: selectedClient.value,
+    priority: selectedPriority.value,
+    status: selectedStatus.value,
+  }));
+
+  const filteredOrders = computed(() => {
+    return orders.value.filter((row) => {
+      if (selectedClient.value) {
+        const customerName =
+          `${row.customer?.firstName || ''} ${row.customer?.lastName || ''}`.trim();
+        if (customerName !== selectedClient.value) return false;
+      }
+      return true;
+    });
+  });
+
   const cards = computed(() => {
-    const currentOrders = orders.value;
+    const currentOrders = filteredOrders.value;
 
     return [
       { icon: 'receipt', value: currentOrders.length, label: 'Total Órdenes', color: 'primary' },
@@ -75,7 +124,11 @@ export function useDashboard() {
       {
         icon: 'account_balance',
         value: formatMoney(
-          currentOrders.reduce((acc, order) => acc + order.finance.totalAmount, 0),
+          currentOrders.reduce((acc, order) => {
+            const isCompleted = order.project.status === 'Completado';
+            const income = isCompleted ? order.finance.totalAmount : order.finance.depositAmount;
+            return acc + income;
+          }, 0),
         ),
         label: 'Ingresos Totales',
         color: 'info',
@@ -83,7 +136,12 @@ export function useDashboard() {
       {
         icon: 'assignment_turned_in',
         value: formatMoney(
-          currentOrders.reduce((acc, order) => acc + order.finance.depositAmount, 0),
+          currentOrders
+            .filter((order) => order.project.status !== 'Completado')
+            .reduce(
+              (acc, order) => acc + (order.finance.totalAmount - order.finance.depositAmount),
+              0,
+            ),
         ),
         label: 'Por Cobrar',
         color: 'negative',
@@ -100,9 +158,9 @@ export function useDashboard() {
       sortable: true,
     },
     {
-      name: 'clientName',
+      name: 'customer',
       label: 'Cliente',
-      field: (row) => row.client.name,
+      field: (row) => `${row.customer.firstName} ${row.customer.lastName}`,
       align: 'left',
       sortable: true,
     },
@@ -116,7 +174,7 @@ export function useDashboard() {
     {
       name: 'clientPhone',
       label: 'Teléfono',
-      field: (row) => row.client.phone,
+      field: (row) => row.customer.phone,
       align: 'left',
       sortable: true,
     },
@@ -177,12 +235,62 @@ export function useDashboard() {
     Urgente: { color: 'orange', bg: 'rgba(var(--q-orange-12), 0.15)' },
   };
 
+  function multiCriteriaFilter(
+    rows: readonly IOrder[],
+    terms: {
+      text: string;
+      client: string;
+      priority: string;
+      status: string;
+    },
+  ): IOrder[] {
+    return rows.filter((row) => {
+      if (terms.text) {
+        const cleanText = terms.text.toLowerCase().trim();
+        const projectTitle = row.project?.title?.toLowerCase() || '';
+        if (!projectTitle.includes(cleanText)) return false;
+      }
+
+      if (terms.client) {
+        const customerName =
+          `${row.customer?.firstName || ''} ${row.customer?.lastName || ''}`.trim();
+        if (customerName !== terms.client) return false;
+      }
+      if (terms.priority) {
+        const priority = row.project?.priority || '';
+        if (priority !== terms.priority) return false;
+      }
+
+      if (terms.status) {
+        const status = row.project?.status || '';
+        if (status !== terms.status) return false;
+      }
+
+      return true;
+    });
+  }
+
+  function clearAllFilters() {
+    filterInput.value = '';
+    selectedClient.value = null;
+    selectedPriority.value = null;
+    selectedStatus.value = null;
+  }
+
   return {
     cards,
     columns,
-    formatMoney,
     priorityMap,
     getOrdersQuery,
     orders,
+    filterInput,
+    selectedClient,
+    selectedPriority,
+    selectedStatus,
+    customerNameOptions,
+    tableFilters,
+    formatMoney,
+    multiCriteriaFilter,
+    clearAllFilters,
   };
 }

@@ -42,6 +42,7 @@ Check the [issues list](https://github.com/KevinDanielDev/forkit-frontend/issues
 4. Fill in all required information
 
 **Include:**
+
 - Clear description of the problem
 - Steps to reproduce
 - Current behavior
@@ -86,6 +87,7 @@ Check that the feature hasn't been suggested in [Issues](https://github.com/Kevi
 4. Provide all details
 
 **Include:**
+
 - Clear description of the feature
 - Use case/motivation
 - Examples of how it would work
@@ -147,6 +149,7 @@ Follow semantic commit convention:
 ```
 
 **Types:**
+
 - `feat:` New functionality
 - `fix:` Bug fixes
 - `docs:` Documentation changes
@@ -158,6 +161,7 @@ Follow semantic commit convention:
 - `ci:` CI/CD changes
 
 **Emojis (optional but recommended):**
+
 - ✨ `feat:`
 - 🐛 `fix:`
 - 📚 `docs:`
@@ -244,28 +248,28 @@ src/
 
 ```vue
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
 
 interface Props {
-  label: string
-  modelValue: string
+  label: string;
+  modelValue: string;
 }
 
 interface Emits {
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   label: 'Input',
   modelValue: '',
-})
+});
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
 const value = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
-})
+});
 </script>
 
 <template>
@@ -330,6 +334,7 @@ Our team reviews PRs considering:
 ### Merge
 
 Once approved:
+
 - Your PR will be merged to `develop`
 - It will be included in the next release
 - You will be credited in the CHANGELOG

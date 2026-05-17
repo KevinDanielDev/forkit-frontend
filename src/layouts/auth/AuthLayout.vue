@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /**
  * AuthLayout — Authentication wrapper layout component.
- * 
+ *
  * Provides a professional two-column layout for authentication pages (sign-in, sign-up).
  * On desktop, displays application features on the left with authentication form on the right.
  * On mobile, shows only the authentication form full-width.
- * 
+ *
  * **Features**
  * - Responsive design (desktop shows 2 columns, mobile shows 1 column)
  * - Left sidebar with feature cards describing the app (desktop only)
@@ -13,25 +13,25 @@
  * - Three feature cards: Digital Services, Financial Control, Client Management
  * - Background image with overlay gradient
  * - Dark theme support from theme store
- * 
+ *
  * **Responsive Behavior**
  * - **Desktop (> small breakpoint)**: Left column (7/12) with features, Right column (5/12) with form
  * - **Mobile**: Single column full-width (12/12) with form only
- * 
+ *
  * **Slots & Children**
  * - Uses `<RouterView />` to render child routes (SignInPage, SignUpPage)
  * - No named slots
- * 
+ *
  * **Dark Theme**
  * - Automatically applies theme from useThemeStore
  * - Reads isDark state and applies to Quasar's dark mode
- * 
+ *
  * **Styling**
  * - Brand gradient: Blue (#2196f3) to white
  * - Feature cards with glassmorphism effect (blur, transparency)
  * - Hover effects with smooth transitions
  * - Responsive padding (xl on desktop, md on mobile)
- * 
+ *
  * @component
  * @example
  * // In routes configuration:
@@ -44,7 +44,7 @@
  *     { path: 'sign-up', component: SignUpPage }
  *   ]
  * }
- * 
+ *
  * // Routes automatically render within <RouterView /> here
  */
 import { useQuasar } from 'quasar';

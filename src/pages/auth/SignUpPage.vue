@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /**
  * SignUpPage — User registration page.
- * 
+ *
  * Renders the sign-up form allowing new users to create accounts.
  * Collects personal information, contact details, and password.
  * Includes full form validation and responsive design.
- * 
+ *
  * **Form Fields**
  * - First name (Nombres): Required text input
  * - Last name (Apellidos): Required text input
@@ -14,7 +14,7 @@
  * - Phone number: Required, must be valid phone format
  * - Password: Required, must meet security requirements
  *   (min 8 chars, uppercase, lowercase, number, special char)
- * 
+ *
  * **Collected Data Structure (ISignUp)**
  * - name: First name
  * - lastName: Last name
@@ -22,7 +22,7 @@
  * - countryCode: Phone country code
  * - phone: Phone number
  * - password: User password
- * 
+ *
  * **Registration Flow**
  * 1. User fills all required fields
  * 2. Click "Create account" button or press Enter
@@ -31,31 +31,31 @@
  * 5. Server validates unique email and creates user account
  * 6. On success: Creates ACL, assigns Admin role, redirects to dashboard
  * 7. On error: Shows error notification, form stays visible for retry
- * 
+ *
  * **Validation Rules**
  * - All fields required
  * - Email: Must be valid format and globally unique
  * - Phone: Must match phone format for country code
  * - Password: Must meet minimum security requirements
- * 
+ *
  * **Features**
  * - Two-column layout on tablet/desktop, single column on mobile
  * - Password visibility toggle
  * - Loading spinner during submission
  * - Link to sign-in page for existing users
  * - Responsive design (md padding on mobile, xl on desktop)
- * 
+ *
  * **Styling**
  * - Glassmorphism card design
  * - Primary color buttons and links
  * - Icon prepends for visual clarity
  * - Dark mode support
- * 
+ *
  * @component
  * @example
  * // In router:
  * { path: 'sign-up', name: 'sign-up', component: () => import('pages/auth/SignUpPage.vue') }
- * 
+ *
  * // Access at /auth/sign-up
  */
 import { ref } from 'vue';

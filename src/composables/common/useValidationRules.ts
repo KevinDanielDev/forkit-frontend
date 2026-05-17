@@ -1,10 +1,10 @@
 /**
  * Composable providing reusable form validation rules for Quasar forms.
- * 
+ *
  * Exports both basic validation rule factories and pre-configured common validation rules.
  * Each rule is a higher-order function that returns a validation function compatible with
  * Quasar's input validation system.
- * 
+ *
  * @returns {Object} Validation rule factories and common presets
  * @returns {Function} .required - Required field validator (returns custom or default message)
  * @returns {Function} .email - Email format validator (allows empty values for optional fields)
@@ -17,16 +17,16 @@
  * @returns {Array} .requiredEmail - Pre-configured email validation rules (required + valid email)
  * @returns {Array} .requiredPhone - Pre-configured phone validation rules (required + valid format)
  * @returns {Array} .requiredPassword - Pre-configured password validation rules (8+ chars, uppercase, digit)
- * 
+ *
  * @example
  * const { required, email, minLength, requiredPassword } = useValidationRules();
- * 
+ *
  * // Use basic validators
  * const rules = [
  *   required('Name is required'),
  *   minLength(3, 'Minimum 3 characters')
  * ];
- * 
+ *
  * // Use preset validators
  * const emailRules = requiredEmail;
  * const passwordRules = requiredPassword;

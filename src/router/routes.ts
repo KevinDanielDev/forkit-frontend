@@ -3,15 +3,15 @@ import isAuthGuard from './authGuard';
 
 /**
  * Application route definitions for ForkIt Frontend.
- * 
+ *
  * Defines the complete route hierarchy with two main sections:
- * 
+ *
  * **Authentication Routes** (`/auth`)
  * - `/auth/sign-in` — User login page
  * - `/auth/sign-up` — User registration page
  * - Both routes wrapped in AuthLayout component
  * - Public access (no authentication required)
- * 
+ *
  * **Dashboard Routes** (`/dashboard`)
  * - `/dashboard` — Main dashboard overview
  * - `/dashboard/orders` — Orders management page
@@ -20,21 +20,21 @@ import isAuthGuard from './authGuard';
  * - `/dashboard/finances` — Financial reports page
  * - All routes wrapped in DashboardLayout component
  * - Protected by isAuthGuard (requires valid authentication session)
- * 
+ *
  * **Redirects & Fallbacks**
  * - `/` redirects to `/auth`
  * - `/*` (any undefined route) shows 404 error page
- * 
+ *
  * @type {RouteRecordRaw[]}
- * 
+ *
  * @example
  * // Navigating to protected routes
  * import { useRouter } from 'vue-router';
  * const router = useRouter();
- * 
+ *
  * // Redirects to sign-in if not authenticated
  * router.push({ name: 'dashboard' });
- * 
+ *
  * // Navigate to specific page
  * router.push({ name: 'orders' });
  */
@@ -81,7 +81,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'clients',
         name: 'clients',
-        component: () => import('pages/dashboard/ClientPage.vue'),
+        component: () => import('pages/dashboard/CustomerPage.vue'),
       },
       {
         path: 'reports',
